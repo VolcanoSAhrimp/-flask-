@@ -13,6 +13,7 @@ $(document).ready(function () {
                         booksListHtml += '<div class="book-detail">' +
                             '<div>图书名称：' + book.title + '</div>' +
                             '<div>图书ID：' + book.book_id + '</div>' +
+                            '<div><a href="#" class="return-book" data-book-id="' + book.book_id + '">返还</a></div>' +
                             '</div>';
                     });
 

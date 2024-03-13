@@ -95,3 +95,14 @@ def search_book():
         return jsonify({'books': book_list})
     else:
         return jsonify({'error': '未找到对应卡号的用户'}), 404
+
+@bp.route('/del_book', methods=['POST'])
+def del_book():
+    library_card_no = request.form.get('libraryCardNo')
+    bookId = request.form.get('bookId')
+    reader_id = UserModel.query.filter_by(card=library_card_no).first().id
+    book=BorrowHistoryModel.query.filter_by(book_id=bookId,reader_id=reader_id).first()
+    db.session.delete(book)
+    db.session.commit()
+    print(reader_id,bookId)
+    return jsonify({"success":"sss"})

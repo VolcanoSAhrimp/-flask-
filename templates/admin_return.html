@@ -7,9 +7,11 @@
     <script>
         var searchNameUrl = "{{ url_for('admin.search_name') }}";
         var searchBookUrl = "{{ url_for('admin.search_book') }}";
+        var returnBookUrl = "{{ url_for('admin.del_book') }}";
     </script>
     <script src="{{ url_for('static', filename='jquery/name.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery/search_book.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery/del_book.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
 {% block body %}
