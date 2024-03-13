@@ -1,7 +1,10 @@
+import inspect
+from pprint import pprint
+
 from flask import Blueprint, render_template, request, g, redirect, url_for
 
 from exts import db
-from models import QuestionModel, AnswerModel
+from models import QuestionModel, AnswerModel,BooksModel
 from .forms import QuestionForm, AnswerForm
 from decorators import login_required
 
@@ -10,8 +13,9 @@ bp = Blueprint('qa', __name__, url_prefix='/')
 
 @bp.route('/')
 def index():
-    questions = QuestionModel.query.order_by(QuestionModel.content_time.desc()).all()
-    return render_template('index.html', questions=questions)
+    # questions = QuestionModel.query.order_by(QuestionModel.content_time.desc()).all()
+    # books = BooksModel.query.all()
+    return render_template('index.html')
 
 
 @bp.route('/qa/public', methods=['GET', 'POST'])
@@ -35,9 +39,9 @@ def public_qa():
 
 
 @bp.route('/qa/detail/<qa_id>')
-def qa_detail(qa_id):
-    question = QuestionModel.query.get(qa_id)
-    return render_template('detail.html', question=question)
+def qa_book_detail(qa_id):
+    book = BooksModel.query.get(qa_id)
+    return render_template('BookDetail.html', book=book)
 
 
 @bp.route('/answer/public', methods=['POST'])
@@ -61,7 +65,7 @@ def search():
     # 查询字符串的形式,/search?q=xxx
     # /search/<q>
     # post,request.from
-    q = request.args.get('q')
-    print(q)
-    questions = QuestionModel.query.filter(QuestionModel.title.contains(q)).all()
-    return render_template("index.html", questions=questions)
+    q = request.args.get('BookName')
+    # books = QuestionModel.query.filter(QuestionModel.title.contains(q)).all()
+    books = BooksModel.query.filter(BooksModel.Name.contains(q)).all()
+    return render_template("library-index.html", books=books)

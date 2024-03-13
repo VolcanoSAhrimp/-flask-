@@ -1,51 +1,26 @@
-.page-title{
-    text-align: center;
+.green-border {
+    border: 2px solid green;
+    border-radius: 20px;
+    margin: 2px;
+    padding: 10px;
 }
 
-.question-info{
-    text-align: center;
+.book-container {
+    display: flex;
+    justify-content: space-between; /* 使子元素在主轴方向两端对齐 */
 }
 
-.comment-group-title{
-    margin-top: 20px;
+.book-image-container {
+    max-width: 100%;
+    height: auto;
+}
+.book-image-container img{
+    border: 1px solid black;
+    border-radius: 50px;
+    width: 100%;
+    height: auto;
 }
 
-.form-container{
-    width: 500px;
-    margin-top: 10px;
-    text-align: right;
-}
-
-.comment-group{
-    list-style: none;
-    padding-left: 0;
-}
-
-.comment-group li{
-    border-bottom:1px solid #eee;
-    padding: 10px 0;
-}
-
-.comment-group li .user-info{
-    height: 40px;
-    line-height:40px;
-    color: #9b9b9b;
-    font-size: 16px;
-}
-
-.user-info .avatar{
-    height:40px;
-    width: 40px;
-    float: left;
-    border-radius: 50%;
-}
-
-.user-info .username{
-    margin-left: 10px;
-}
-.user-info .create-time{
-    float: right;
-}
-.comment-content{
-    margin-left: 50px;
+.book-info-container {
+    width: 65%; /* 设置信息区域宽度，确保两者加起来不超过100%，根据实际情况调整 */
 }

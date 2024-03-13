@@ -42,3 +42,33 @@
 .question-detail .question-author{
     margin-right:10px;
 }
+.book-form {
+    position: relative;
+    height: 50vh; /* 为了让整个div填充视口高度以便居中 */
+}
+.form-span {
+    position: relative;
+    display: flex; /* 将其转换为Flex容器 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+}
+.form-span .form-input {
+    margin-right: 4px;
+    width: 400px;
+    height: 50px;
+}
+input[type="text"], input[type="email"], input[type="password"] {
+  border-radius: 10px; /* 这里的数值可以根据需要调整 */
+}
+input[type="text"] {
+  border: none;
+  border-bottom: 2px solid #999; /* 默认边框样式 */
+  outline: none; /* 去除浏览器默认的轮廓线 */
+
+  /* 当input获得焦点（例如：点击或通过键盘操作）时应用以下样式 */
+  transition: border-color 0.3s ease; /* 添加过渡效果可使变化更平滑 */
+
+  &:focus {
+    border-bottom-color: blue; /* 设置边框颜色为蓝色 */
+  }
+}
