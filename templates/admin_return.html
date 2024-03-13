@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}首页{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    <script>
+        var searchNameUrl = "{{ url_for('admin.search_name') }}";
+        var searchBookUrl = "{{ url_for('admin.search_book') }}";
+    </script>
+    <script src="{{ url_for('static', filename='jquery/name.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery/search_book.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+{% block body %}
+    <div class="form-space" style="background-color: white;border-radius: 20px;">
+        <div style="border: none;display: flex;">
+            <form action="{{ url_for('admin.lend_book') }}" method="post" name="borrowForm">
+                <div class="green-name">
+                    <!-- 用户信息部分 -->
+                    <h2>用户信息</h2>
+                    <label for="libraryCardNo">图书馆卡号：</label>
+                    <input type="text" id="libraryCardNo" name="libraryCardNo" required>
+                    <br>
+                    <label for="username">用户名：</label>
+                    {#                <input type="text" id="username" name="username" required>#}
+                    <input type="text" id="username" name="username" readonly>
+                    <br>
+                </div>
+                <div class="green-book">
+                    <!-- 图书信息部分 -->
+                    <h2>已借图书列表</h2>
+                    <div id="borrowed-books-list">
+                    </div>
+                </div>
+{#                <button type="submit" name="borrowSubmit">借阅</button>#}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

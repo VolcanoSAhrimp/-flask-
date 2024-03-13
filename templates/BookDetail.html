@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.Name }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detail.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div style="background-color: white;border-radius: 20px">
+        <div class="book-container">
+            <div class="book-image-container">
+                <img alt="image" src="{{url_for('static',filename='images/avatar.jpg')}}" />
+            </div>
+            <div class="book-info-container green-border">
+                <h1>书名：{{book.Name}}</h1>
+                <div id="ilitc">出版社：{{book.Publisher}}</div>
+                <div id="io4er">简介:{{book.Synopsis}}</div>
+            </div>
+        </div>
+        <div>
+            <div class="green-border">
+                <p>书号:{{book.id}}</p>
+                <p>书名:{{book.Name}}</p>
+                <p>作者:{{book.Author}}</p>
+                <p>类型:{{book.Name}}</p>
+                <p>价格:{{book.Price}}</p>
+                <p>出版社:{{book.Publisher}}</p>
+                <p>馆藏册数:{{book.StockCount}}</p>
+                <p>在馆册数:{{book.AvailableCopies}}</p>
+                <p>被借次数:{{book.BorrowedTimes}}</p>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
