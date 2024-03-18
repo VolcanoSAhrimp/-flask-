@@ -4,7 +4,7 @@ from pprint import pprint
 from flask import Blueprint, render_template, request, g, redirect, url_for
 
 from exts import db
-from models import QuestionModel, AnswerModel,BooksModel
+from models import BooksModel
 from .forms import QuestionForm, AnswerForm
 from decorators import login_required
 

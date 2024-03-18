@@ -1,6 +1,8 @@
 $(document).on('click', '.return-book', function(event) {
     event.preventDefault();  // 阻止默认的链接跳转行为
 
+    var bookRow = $(this).closest('.book-detail');  // 获取当前a标签所在的.book-detail div .是类，#是id
+
     var bookId = $(this).data('book-id');
     var libraryCardNo = $('#libraryCardNo').val();
 
@@ -12,7 +14,11 @@ $(document).on('click', '.return-book', function(event) {
             if (response.success) {
                 alert('图书已成功归还！');
                 // 可能还需要在这里更新页面上的已借图书列表
-                window.location.reload(true);
+                // window.location.reload(true);
+                // 隐藏或删除当前书籍记录
+                bookRow.slideUp(300, function() { bookRow.remove(); });  // 使用slideUp动画效果后移除（可选）
+                // 或者直接删除（无动画效果）
+                // bookRow.remove();
             } else {
                 alert('图书归还失败，请稍后再试或联系管理员。');
             }

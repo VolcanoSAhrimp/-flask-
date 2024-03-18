@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}首页{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    <script>
+        var addNameUrl = "{{ url_for('admin.add_book') }}";
+    </script>
+<script src="{{ url_for('static', filename='jquery/space-width.js') }}"></script>
+{#    <script src="{{ url_for('static', filename='jquery/add_book.js') }}"></script>#}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+{% endblock %}
+{% block body %}
+    <div class="form-space" style="background-color: white;border-radius: 20px;">
+        <div style="border: none;display: flex;" id="addbook">
+            <form method="post" name="addForm">
+                <div class="green-book">
+                    <div>图书名:</div>
+                    <input type="text" id="Name" name="Name"><br>
+                    <div>作者:</div>
+                    <input type="text" id="Author" name="Author"><br>
+                    <div>出版社:</div>
+                    <input type="text" id="Publisher" name="Publisher"><br>
+                    <div>书籍简介:</div>
+                    <input type="text" id="Synopsis" name="Synopsis"><br>
+                    <div>价格:</div>
+                    <input type="text" id="Price" name="Price"><br>
+                </div>
+                <button type="submit" name="bookSubmit" id="bookSubmit">添加书本</button>
+            </form>
+
+        </div>
+    </div>
+   <!-- 在body标签结尾附近添加 -->
+{#   <script>       $(document).ready(function() {#}
+{#           var success = {{ success|tojson }};#}
+{#           if (success) {#}
+{#               alert('图书已成功添加！');#}
+{#           }#}
+{#       });#}
+{% endblock %}

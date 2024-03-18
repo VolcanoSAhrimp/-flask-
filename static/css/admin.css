@@ -3,7 +3,12 @@ body {
     background-color: #f5f5f5;
 }
 
-form[name="borrowForm"]{
+#bbody {
+    display: flex;
+    height: 100vh;
+}
+
+form[name="borrowForm"] {
     width: 100%;
     margin: 30px auto;
     padding: 20px;
@@ -13,7 +18,7 @@ form[name="borrowForm"]{
     /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
 }
 
-form[name="borrowForm"] input{
+form[name="borrowForm"] input {
     display: block;
     width: 100%;
     margin-bottom: 1rem;
@@ -23,7 +28,7 @@ form[name="borrowForm"] input{
     border-radius: 4px;
 }
 
-button[type="submit"][name="borrowSubmit"] {
+button[type="submit"][name="borrowSubmit"], button[type="submit"][name="bookSubmit"]{
     display: block;
     width: 100%;
     padding: 0.75rem;
@@ -34,16 +39,71 @@ button[type="submit"][name="borrowSubmit"] {
     border-radius: 4px;
     cursor: pointer;
 }
-.green-book, .green-name{
+
+.green-book, .green-name {
     border: #0dff0e solid 2px;
     border-radius: 50px;
     padding: 30px;
     flex-grow: 1;
     margin: 10px;
 }
-.book-detail{
+
+.book-detail {
     border: #0dff0e solid 2px;
     border-radius: 30px;
     padding: 20px;
     margin: 5px;
 }
+
+.left-nav {
+    width: 200px; /* 根据需求设置左侧导航栏宽度 */
+    background-color: #f1f1f1;
+    min-height: 100%; /* 确保导航栏高度与容器高度相同 */
+    box-sizing: border-box;
+    padding: 20px; /* 添加内边距 */
+}
+
+.left-nav div {
+    border: #0dff0e solid 2px;
+    border-radius: 10px;
+    padding: 10px;
+    flex-grow: 1;
+    margin: 5px;
+    font-size: 30px;
+    font-family: "思源黑体 CN Medium";
+}
+
+.left-nav a {
+    text-decoration: none;
+}
+
+.left-nav a:hover { /* 当鼠标悬停时移除下划线 */
+    text-decoration: none;
+}
+
+/* 当链接被点击（激活）时移除下划线 */
+a:active {
+    text-decoration: none;
+}
+
+.content {
+    flex-grow: 1; /* 让内容区域填充剩余空间 */
+    padding: 20px; /* 添加内边距 */
+}
+/*.green-book label, .green-book input[type="text"] {*/
+/*  margin-bottom: 0.5em; !* 根据需求调整间距 *!*/
+/*  vertical-align: middle; !* 垂直居中对齐 *!*/
+/*}*/
+/*.green-book label {*/
+/*  display: inline-block;*/
+/*  width: 100%; !* 如果需要标签宽度充满父容器 *!*/
+/*}*/
+div[class="green-book"] input[type="text"]{
+    width: calc(100%);
+     box-sizing: border-box; /* 确保边框和内填充包含在总宽度内 */
+}
+div[class="green-book"] div{
+    font-size: 30px;
+    font-family: "思源黑体 CN Medium";
+}
+

@@ -106,3 +106,19 @@ def del_book():
     db.session.commit()
     print(reader_id,bookId)
     return jsonify({"success":"sss"})
+
+@bp.route('/add_book', methods=['GET','POST'])
+def add_book():
+    if request.method == 'GET':
+        return render_template('admin_add_book.html')
+    else:
+        # print(request.form)
+        Name=request.form.get('Name')
+        Author=request.form.get('Author')
+        Publisher=request.form.get('Publisher')
+        Synopsis=request.form.get('Synopsis')
+        Price=request.form.get('Price')
+        book=BooksModel(Name=Name,Author=Author,Publisher=Publisher,Synopsis=Synopsis,Price=Price)
+        db.session.add(book)
+        db.session.commit()
+        return jsonify({"success":"sss"})
