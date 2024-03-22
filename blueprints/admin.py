@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, g, redirect, url_for, jso
 from sqlalchemy.orm import aliased
 
 from exts import db
-from models import BorrowHistoryModel, UserModel, BooksModel
+from models import BorrowHistoryModel, UserModel, BooksModel,TagModel
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -122,3 +122,44 @@ def add_book():
         db.session.add(book)
         db.session.commit()
         return jsonify({"success":"sss"})
+
+@bp.route('/search_tags', methods=['GET','POST'])
+def search_tags():
+    if request.method == 'GET':
+        return render_template('add_tags.html')
+    else:
+        try:
+            bookId=request.form.get('bookID')
+            # print(bookId)
+            book=BooksModel.query.filter_by(id=bookId).first()
+            bookName=book.Name
+            # print(bookName)
+            tags=book.Tags
+            # print(tags)
+            tags=[{'id':tag.id,'name':tag.name} for tag in tags]
+            # print(tags)
+            return jsonify({"books":bookName,"tags":tags})
+        except:
+            return jsonify({"books":bookName,'tags':[]})
+
+@bp.route('/add_tags', methods=['GET','POST'])
+def add_tags():
+    if request.method == 'GET':
+        return render_template('add_tags.html')
+    else:
+        tag=request.form.get('add-tag')
+        flg=TagModel.query.filter_by(name=tag).first()
+        bookId = request.form.get('bookID')
+        book = BooksModel.query.filter_by(id=bookId).first()
+        print(flg)
+        if not flg:
+            tags=TagModel(name=tag)
+            db.session.add(tags)
+            db.session.commit()
+            flg1 = TagModel.query.filter_by(name=tag).first()
+            book.Tags.append(flg1)
+        else:
+            book.Tags.append(flg)
+        db.session.add(book)
+        db.session.commit()
+        return render_template('add_tags.html')

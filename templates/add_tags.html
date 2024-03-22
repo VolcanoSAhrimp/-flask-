@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}添加图书标签{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    <script>
+        var searchTagsUrl = "{{ url_for('admin.search_tags') }}";
+    </script>
+    <script src="{{ url_for('static', filename='jquery/tags-add.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+{% block body %}
+    <div class="form-space" style="background-color: white;border-radius: 20px;">
+        <div style="border: none;display: flex;">
+            <form action="{{ url_for('admin.add_tags') }}" method="post" name="borrowForm">
+                <div class="green-book">
+                    <!-- 图书信息部分 -->
+                    <h2>图书信息</h2>
+                    <label for="bookID">图书ID：</label>
+                    <input type="text" id="bookID" name="bookID" required>
+                    <br>
+                    <label for="bookTitle">图书标题：</label>
+                    <input type="text" id="bookTitle" name="bookTitle" readonly>
+                </div>
+                <div class="green-book" id="tags" style="display: none">
+{#                    显示已有标签内容#}
+                </div>
+                <div class="green-book" id="add-tag-div">
+                    <label for="bookID">添加图书标签：</label>
+                    <input type="text" id="add-tag" name="add-tag">
+                </div>
+                <button type="submit" name="tagSubmit" id="tagSubmit">添加标签</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

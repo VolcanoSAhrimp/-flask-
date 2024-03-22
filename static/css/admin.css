@@ -106,4 +106,12 @@ div[class="green-book"] div{
     font-size: 30px;
     font-family: "思源黑体 CN Medium";
 }
-
+.tag{
+    display: inline-block;
+}
+.black-border{
+    border: black 1px solid;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px;
+}
