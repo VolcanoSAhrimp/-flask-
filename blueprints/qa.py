@@ -18,26 +18,6 @@ def index():
     return render_template('index.html')
 
 
-# @bp.route('/qa/public', methods=['GET', 'POST'])
-# @login_required
-# def public_qa():
-#     if request.method == 'GET':
-#         return render_template('public_question.html')
-#     else:
-#         form = QuestionForm(request.form)
-#         # print(f"form: {form.data}")
-#         if form.validate():
-#             title = form.title.data
-#             content = form.content.data
-#             question = QuestionModel(title=title, content=content, author=g.user)
-#             db.session.add(question)
-#             db.session.commit()
-#             return redirect("/")
-#         else:
-#             print(form.errors)
-#             return redirect(url_for('qa.public_qa'))
-
-
 @bp.route('/qa/detail/<qa_id>')
 def qa_book_detail(qa_id):
     book = BooksModel.query.get(qa_id)
@@ -65,9 +45,10 @@ def search_tag():
     # books = BooksModel.query.filter(BooksModel.Name.contains(q)).all()
     books_tag = TagModel.query.filter_by(name=tag).all()
     print(books_tag)
+    all_books = []
     for book in books_tag:
-        books=book.books
-    print(books)
+        all_books.extend(book.books)
+    print(all_books)
     # data = pd.DataFrame([vars(book) for book in books])
     # print(data)
-    return render_template("library-index.html", books=books)
+    return render_template("library-index.html", books=all_books)

@@ -118,3 +118,9 @@ div[class="green-book"] div{
     margin: 5px;
     padding: 5px;
 }
+.book-tags div{
+    border-radius: 5px;
+    border: #0dff0e solid 2px;
+    padding: 5px;
+    font-weight: bolder;
+}

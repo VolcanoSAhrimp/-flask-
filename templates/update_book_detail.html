@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.Name }}{% endblock %}
+
+{% block head %}
+     <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detail.css') }}">
+    <script>
+        var saveUrl = "{{ url_for('admin.update_book') }}";
+    </script>
+    <script src="{{ url_for('static', filename='jquery/save_book_detail.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {#    <form action="{{ url_for('admin.update_book') }}" method="get" id="book_datail_form">#}
+    <form method="post" id="book_datail_form">
+        <div style="background-color: white;border-radius: 20px">
+            <div class="book-container">
+
+                <div class="book-image-container">
+                    <img alt="image" src="{{ url_for('static',filename='images/avatar.jpg') }}"/>
+                </div>
+                <div class="book-info-container green-border">
+                    <div class="inline-block-container">
+                        <span>书名：</span>
+                        <input type="text" name="bookName" value="{{ book.Name }}"
+                               style="width: 100%; box-sizing: border-box;"/>
+                    </div>
+                    <div id="ilitc" class="inline-block-container">
+                        <span>出版社：</span>
+                        <input type="text" name="Publisher" value="{{ book.Publisher }}"
+                               style="width: 100%; box-sizing: border-box;"/>
+                    </div>
+                    <div id="io4er" class="inline-block-container">
+                        <span>简介：</span>
+                        <textarea name="Synopsis" rows="15"
+                                  style="width: 100%; box-sizing: border-box;">{{ book.Synopsis }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="green-border">
+                    <p>书号:<input type="text" name="id" value="{{ book.id }}" readonly/></p>
+                    <p>书名:{{ book.Name }}</p>
+                    <p>作者:<input type="text" name="Author" value="{{ book.Author }}"/></p>
+                    <span>类型:<div style="display: inline-block">
+                    {% for tag in book.Tags %}
+                        {{ tag.name }}
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div></span>
+                    <p></p>
+                    <p>价格:<input type="text" name="Price" value="{{ book.Price }}"/></p>
+{#                    <p>出版社:<input type="text" name="Publisher" value="{{ book.Publisher }}"/></p>#}
+                    <p>馆藏册数:{{ book.StockCount }}</p>
+                    <p>在馆册数:{{ book.AvailableCopies }}</p>
+                    <p>被借次数:{{ book.BorrowedTimes }}</p>
+                </div>
+                <button type="submit" id="submit-btn" name="submit-btn">提交修改</button>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+

@@ -4,7 +4,8 @@ from flask import Blueprint, render_template, request, g, redirect, url_for, jso
 from sqlalchemy.orm import aliased
 
 from exts import db
-from models import BorrowHistoryModel, UserModel, BooksModel,TagModel
+from models import BorrowHistoryModel, UserModel, BooksModel, TagModel
+from pandas import DataFrame
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -48,7 +49,8 @@ def return_book():
         reader_id = UserModel.query.filter(UserModel.username == username).first().id
         book_id = BooksModel.query.filter(BooksModel.Name == bookTitle).first().id
         # print(f"reader_id={reader_id.id},book_id={book_id.id}",)
-        question = BorrowHistoryModel(reader_id=reader_id, book_id=book_id, borrow_date=datetime.now(),return_date=None)
+        question = BorrowHistoryModel(reader_id=reader_id, book_id=book_id, borrow_date=datetime.now(),
+                                      return_date=None)
         db.session.add(question)
         db.session.commit()
         return render_template('admin_borrow.html')
@@ -74,6 +76,7 @@ def search_name():
         except:
             return jsonify({'bookTitle': ''})
 
+
 @bp.route('/search_book', methods=['POST'])
 def search_book():
     library_card_no = request.form.get('libraryCardNo')
@@ -86,7 +89,7 @@ def search_book():
 
         # 根据用户ID查询该用户的借阅历史记录并关联到对应的书籍信息
         borrowed_books = (db.session.query(BooksModel)
-                          .join(history_alias,BooksModel.id == history_alias.book_id)
+                          .join(history_alias, BooksModel.id == history_alias.book_id)
                           .filter(history_alias.reader_id == user.id).all())
 
         # 转换为 JSON 格式返回给前端
@@ -96,64 +99,68 @@ def search_book():
     else:
         return jsonify({'error': '未找到对应卡号的用户'}), 404
 
+
 @bp.route('/del_book', methods=['POST'])
 def del_book():
     library_card_no = request.form.get('libraryCardNo')
     bookId = request.form.get('bookId')
     reader_id = UserModel.query.filter_by(card=library_card_no).first().id
-    book=BorrowHistoryModel.query.filter_by(book_id=bookId,reader_id=reader_id).first()
+    book = BorrowHistoryModel.query.filter_by(book_id=bookId, reader_id=reader_id).first()
     db.session.delete(book)
     db.session.commit()
-    print(reader_id,bookId)
-    return jsonify({"success":"sss"})
+    print(reader_id, bookId)
+    return jsonify({"success": "sss"})
 
-@bp.route('/add_book', methods=['GET','POST'])
+
+@bp.route('/add_book', methods=['GET', 'POST'])
 def add_book():
     if request.method == 'GET':
         return render_template('admin_add_book.html')
     else:
         # print(request.form)
-        Name=request.form.get('Name')
-        Author=request.form.get('Author')
-        Publisher=request.form.get('Publisher')
-        Synopsis=request.form.get('Synopsis')
-        Price=request.form.get('Price')
-        book=BooksModel(Name=Name,Author=Author,Publisher=Publisher,Synopsis=Synopsis,Price=Price)
+        Name = request.form.get('Name')
+        Author = request.form.get('Author')
+        Publisher = request.form.get('Publisher')
+        Synopsis = request.form.get('Synopsis')
+        Price = request.form.get('Price')
+        book = BooksModel(Name=Name, Author=Author, Publisher=Publisher, Synopsis=Synopsis, Price=Price)
         db.session.add(book)
         db.session.commit()
-        return jsonify({"success":"sss"})
+        return jsonify({"success": "sss"})
 
-@bp.route('/search_tags', methods=['GET','POST'])
+
+@bp.route('/search_tags', methods=['GET', 'POST'])
 def search_tags():
     if request.method == 'GET':
         return render_template('add_tags.html')
     else:
         try:
-            bookId=request.form.get('bookID')
+            bookId = request.form.get('bookID')
             # print(bookId)
-            book=BooksModel.query.filter_by(id=bookId).first()
-            bookName=book.Name
+            book = BooksModel.query.filter_by(id=bookId).first()
+            bookName = book.Name
             # print(bookName)
-            tags=book.Tags
+            tags = book.Tags
             # print(tags)
-            tags=[{'id':tag.id,'name':tag.name} for tag in tags]
+            tags = [{'id': tag.id, 'name': tag.name} for tag in tags]
             # print(tags)
-            return jsonify({"books":bookName,"tags":tags})
+            return jsonify({"books": bookName, "tags": tags})
         except:
-            return jsonify({"books":bookName,'tags':[]})
+            return jsonify({"books": bookName, 'tags': []})
 
-@bp.route('/add_tags', methods=['GET','POST'])
+
+@bp.route('/add_tags', methods=['GET', 'POST'])
 def add_tags():
     if request.method == 'GET':
         return render_template('add_tags.html')
     else:
-        tag=request.form.get('add-tag')
-        flg=TagModel.query.filter_by(name=tag).first()
+        tag = request.form.get('add-tag')
+        flg = TagModel.query.filter_by(name=tag).first()
         bookId = request.form.get('bookID')
         book = BooksModel.query.filter_by(id=bookId).first()
         print(flg)
         if not flg:
-            tags=TagModel(name=tag)
+            tags = TagModel(name=tag)
             db.session.add(tags)
             db.session.commit()
             flg1 = TagModel.query.filter_by(name=tag).first()
@@ -163,3 +170,51 @@ def add_tags():
         db.session.add(book)
         db.session.commit()
         return render_template('add_tags.html')
+
+
+@bp.route('/list_book', methods=['GET', 'POST'])
+def list_book():
+    books = BooksModel.query.filter_by().all()
+    print(books)
+    return render_template('list_book.html',books=books)
+
+@bp.route('/book_detail/<int:book_id>')
+def book_detail(book_id):
+    # q = request.args.get('book_id')
+    # book = BooksModel.query.filter_by(id=q).first()
+    book = BooksModel.query.filter_by(id=book_id).first()
+    # print(book.Name)
+    # data=DataFrame([vars(book_data) for book_data in book])
+    # print(data)
+    return render_template("update_book_detail.html", book=book)
+
+@bp.route('/update_book', methods=['POST'])
+def update_book():
+    q = request
+    # print(q)
+    id = q.form.get('id')
+    print(id)
+    name = q.form.get('bookName')
+    Publisher = q.form.get('Publisher')
+    Synopsis = q.form.get('Synopsis')
+    Author = q.form.get('Author')
+    Price = q.form.get('Price')
+    # Publisher = q.args.get('Publisher')
+    book=BooksModel.query.filter_by(id=id).first()
+    # print(book)
+    # 更新记录
+    if book:
+        book.Name = name
+        book.Synopsis = Synopsis
+        book.Author = Author
+        book.Price = Price
+        book.Publisher = Publisher
+
+        # 提交数据库事务（如果你使用的是支持事务的ORM，如SQLAlchemy）
+        db.session.commit()
+        return jsonify({"success": "sss"})
+    else:
+        print(f"找不到名为《{name}》的图书")
+        return jsonify({"error": "sss"})
+    # return jsonify({"books": bookName, 'tags': []})
+
