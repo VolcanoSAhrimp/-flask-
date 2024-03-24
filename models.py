@@ -86,7 +86,8 @@ class BooksModel(db.Model):
     StockCount = db.Column(db.Integer, nullable=False, default=0)  # 馆藏册数
     AvailableCopies = db.Column(db.Integer, nullable=False, default=0)  # 在馆册数
     BorrowedTimes = db.Column(db.Integer, nullable=False, default=0)  # 被借次数
-    Tags = db.relationship(TagModel, secondary="book_tags",backref=db.backref('books', lazy='dynamic'))
+    # Tags = db.relationship(TagModel, secondary="book_tags",backref=db.backref('books', lazy='dynamic'))
+    Tags = db.relationship(TagModel, secondary="book_tags",backref=db.backref('books'))
 
 
 class BorrowHistoryModel(db.Model):

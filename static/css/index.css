@@ -24,16 +24,16 @@
 
 .question-title a{
     color: #259;
-    font-size:14px;
-    font-weight: 900;
+    font-size:30px;
+    font-weight: bold;
 }
 .question-author{
-    font-size: 12px;
+    /*font-size: 12px;*/
     margin-top: 5px;
 }
 .question-content{
     margin-top: 5px;
-    font-size:12px;
+    /*font-size:12px;*/
 }
 .question-detail{
     text-align: right;
@@ -71,4 +71,12 @@ input[type="text"] {
   &:focus {
     border-bottom-color: blue; /* 设置边框颜色为蓝色 */
   }
+}
+.book-tags button{
+    font-family: "思源黑体 CN Medium";
+    /*font-size: 10px;*/
+    border: black 1px solid;
+    border-radius: 10px;
+    margin: 2px;
+    padding: 2px;
 }
