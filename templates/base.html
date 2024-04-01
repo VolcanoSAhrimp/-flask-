@@ -78,9 +78,9 @@
             </ul>
         </div>
     {% endif %}
-<div class="container" id="bbody">
+<div class="container" id="bbody" {% if current_route == "hide" %} style="margin-left: 0"{% endif %}>
 
-        <div class="content">
+        <div class="content" >
             {% block body %}{% endblock %}
         </div>
 

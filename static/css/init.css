@@ -1,3 +1,8 @@
-body{
+body {
     background-color: #f3f3f3;
+}
+
+.container ul{
+    overflow-x: visible;
+    overflow-y: auto;
 }

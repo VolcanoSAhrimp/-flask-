@@ -9,6 +9,7 @@ from flask import request
 import string
 from models import EmailCaptchaModel,UserModel
 from .forms import ReservationForm,LoginForm
+from datetime import datetime
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -59,7 +60,8 @@ def register():
             email=form.email.data
             username=form.username.data
             password=form.password.data
-            user=UserModel(username=username,password=generate_password_hash(password),email=email)
+            card="US"+datetime.now().strftime("%Y%m%d")
+            user=UserModel(username=username,password=generate_password_hash(password),card=card,email=email)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for("auth.login"))

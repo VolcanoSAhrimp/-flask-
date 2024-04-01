@@ -176,7 +176,7 @@ def add_tags():
 def list_book():
     books = BooksModel.query.filter_by().all()
     print(books)
-    return render_template('list_book.html',books=books)
+    return render_template('list_book.html',books=books,current_route="hide")
 
 @bp.route('/book_detail/<int:book_id>')
 def book_detail(book_id):

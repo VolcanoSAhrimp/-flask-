@@ -9,8 +9,8 @@
 {%block body%}
      <div class="row" style="margin-top: 20px;">
 {#            <div class="col"></div>#}
-            <div class="col-10">
-                <ul class="question-ul">
+            <div class="col-10" style="width:100%">
+                <ul class="question-ul" style="width: 100vh">
                     {% for book in books %}
                         <li>
                         <div class="side-question">
@@ -33,6 +33,5 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="col"></div>
         </div>
 {% endblock %}
