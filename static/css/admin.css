@@ -93,21 +93,14 @@ a:active {
     flex-grow: 1; /* 让内容区域填充剩余空间 */
     padding: 20px; /* 添加内边距 */
 }
-/*.green-book label, .green-book input[type="text"] {*/
-/*  margin-bottom: 0.5em; !* 根据需求调整间距 *!*/
-/*  vertical-align: middle; !* 垂直居中对齐 *!*/
-/*}*/
-/*.green-book label {*/
-/*  display: inline-block;*/
-/*  width: 100%; !* 如果需要标签宽度充满父容器 *!*/
-/*}*/
+
 div[class="green-book"] input[type="text"]{
     width: calc(100%);
      box-sizing: border-box; /* 确保边框和内填充包含在总宽度内 */
 }
 div[class="green-book"] div{
     font-size: 30px;
-    font-family: "思源黑体 CN Medium";
+    font-family: "思源黑体 CN Medium", serif;
 }
 .tag{
     display: inline-block;

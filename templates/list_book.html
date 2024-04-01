@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/admin.css')}}">
 {% endblock%}
 {%block body%}
-     <div class="row" style="margin-top: 20px;">
-{#            <div class="col"></div>#}
-            <div class="col-10" style="width:100%">
-                <ul class="question-ul" style="width: 100vh">
+     <div class="row" >
+            <div class="col-10" >
+                <ul class="question-ul" style="width: 150vh;">
                     {% for book in books %}
-                        <li>
+                        <li style="border-radius: 20px;margin-bottom: 10px">
                         <div class="side-question">
                             <img class="side-question-avatar" src="../static/images/avatar.jpg" alt="">
                         </div>

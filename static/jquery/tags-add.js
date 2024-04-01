@@ -12,7 +12,7 @@ $(document).ready(function () {
                     var booksListHtml = '';
                     $.each(response.tags, function (index, tag) {
                         booksListHtml +=
-                            '<div class="tag black-border">' + tag.name + '</div>'
+                            '<a href="#" class="tag-id" data-tag-id="' + tag.id + '"><div class="tag black-border">'+ tag.name + '</div></a>'
                     });
                     $('#tags').css('display', 'block');
 // 在循环结束后添加“添加标签”按钮

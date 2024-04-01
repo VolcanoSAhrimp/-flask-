@@ -6,8 +6,11 @@
     <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
     <script>
         var searchTagsUrl = "{{ url_for('admin.search_tags') }}";
+        var delTagsUrl = "{{ url_for('admin.del_tag') }}";
     </script>
     <script src="{{ url_for('static', filename='jquery/tags-add.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery/del_tags.js') }}"></script>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
 {% block body %}
@@ -28,7 +31,7 @@
                 </div>
                 <div class="green-book" id="add-tag-div">
                     <label for="bookID">添加图书标签：</label>
-                    <input type="text" id="add-tag" name="add-tag">
+                    <input type="text" id="add-tag" name="add-tag" maxlength="100">
                 </div>
                 <button type="submit" name="tagSubmit" id="tagSubmit">添加标签</button>
             </form>

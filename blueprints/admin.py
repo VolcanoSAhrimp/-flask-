@@ -218,3 +218,18 @@ def update_book():
         return jsonify({"error": "sss"})
     # return jsonify({"books": bookName, 'tags': []})
 
+@bp.route('/del_tag')
+def del_tag():
+    tagId = request.args.get('tag_id')
+    bookId = request.args.get('book_id')
+    # print(tagId,bookId)
+    tag=TagModel.query.filter_by(id=tagId).first()
+    book = BooksModel.query.filter_by(id=bookId).first()
+    try:
+        tag.books.remove(book)
+        db.session.commit()
+        return jsonify({"success":True})
+    except Exception as e:
+        db.session.rollback()  # 出现错误时回滚事务
+        print(f"An error occurred: {e}")
+        return jsonify({"error":False})

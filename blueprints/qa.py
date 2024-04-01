@@ -1,12 +1,10 @@
-import inspect
-from pprint import pprint
+from flask import Blueprint, render_template, request
 
-from flask import Blueprint, render_template, request, g, redirect, url_for
-
-from exts import db
 from models import BooksModel,TagModel
-from .forms import QuestionForm
-from decorators import login_required
+from flask import Blueprint, render_template, request
+
+from models import BooksModel, TagModel
+
 # import pandas as pd
 bp = Blueprint('qa', __name__, url_prefix='/')
 

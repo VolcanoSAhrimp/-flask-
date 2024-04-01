@@ -54,12 +54,12 @@ class EmailCaptchaModel(db.Model):
 class TagModel(db.Model):
     __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(10), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     book_tags = db.Table("book_tags",
                          db.Column('book_id', db.Integer, db.ForeignKey('books.id'), primary_key=True),
                          db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True)
                          )
-
+    #这里还有个books属性的book表的关联关系，用于从标签查询图书
 
 class BooksModel(db.Model):
     """
