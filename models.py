@@ -16,7 +16,7 @@ class UserModel(db.Model):
     # 卡号
     card = db.Column(db.String(100), nullable=False, unique=True)
     # 管理员权限
-    admin = db.Column(db.Boolean, default=False)
+    admin = db.Column(db.Integer, default=1, nullable=False)
 
 
 class EmailCaptchaModel(db.Model):
@@ -59,7 +59,8 @@ class TagModel(db.Model):
                          db.Column('book_id', db.Integer, db.ForeignKey('books.id'), primary_key=True),
                          db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True)
                          )
-    #这里还有个books属性的book表的关联关系，用于从标签查询图书
+    # 这里还有个books属性的book表的关联关系，用于从标签查询图书
+
 
 class BooksModel(db.Model):
     """
@@ -87,7 +88,7 @@ class BooksModel(db.Model):
     AvailableCopies = db.Column(db.Integer, nullable=False, default=0)  # 在馆册数
     BorrowedTimes = db.Column(db.Integer, nullable=False, default=0)  # 被借次数
     # Tags = db.relationship(TagModel, secondary="book_tags",backref=db.backref('books', lazy='dynamic'))
-    Tags = db.relationship(TagModel, secondary="book_tags",backref=db.backref('books'))
+    Tags = db.relationship(TagModel, secondary="book_tags", backref=db.backref('books'))
 
 
 class BorrowHistoryModel(db.Model):
@@ -108,8 +109,10 @@ class BorrowHistoryModel(db.Model):
     __tablename__ = 'borrow_history'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # 外键关联
     reader_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
+
     borrow_date = db.Column(db.DateTime, default=datetime.now)
     return_date = db.Column(db.DateTime, nullable=True)
 
