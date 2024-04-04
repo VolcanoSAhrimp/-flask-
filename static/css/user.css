@@ -1,0 +1,8 @@
+ul[class="question-ul"]{
+    width: 150vh;
+}
+ul[class="question-ul"] li {
+    width: 150vh;
+    border-radius: 1vh;
+    margin-bottom: 1vh;
+}

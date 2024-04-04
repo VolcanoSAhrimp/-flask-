@@ -10,7 +10,7 @@
     {#<!--    <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap.4.6.min.css') }}">-->#}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/init.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}用户界面{% endblock %}</title>
     <!--    详情页面自己的css,js都放在header当中-->
     {% block head %}{% endblock %}
     <!--    标题自定义-->
@@ -26,18 +26,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                {% if user.admin==2 %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.lend_book') }}">出借</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.return_book') }}">返还</a>
-                    </li>
-                {% elif user.admin==1 %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('user.index') }}">用户界面</a>
-                    </li>
-                {% endif %}
                 <li class="nav-item ml-2">
                     {#                        <form class="form-inline my-2 my-lg-0" method="GET" action="{{url_for('qa.search')}}">#}
                     <form class="form-inline my-2 my-lg-0" method="GET" action="{{ url_for('qa.search') }}">
@@ -52,7 +40,7 @@
                 {% if user %}
                     <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('user.index') }}"><span href="#">{{ user.username }}</span></a>
-{#                        <span class="nav-link" href="#">{{ user.username }}</span>#}
+
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">退出登录</a>
@@ -71,14 +59,13 @@
     </div>
 </nav>
 <div class="parent-container" style="display: flex; flex-direction: row;">
-    {% if user.admin==2 %}
         <div class="nav" style="width: 200px;">
             <ul class="left-nav">
-                <a href="{{ url_for('admin.lend_book') }}">
-                    <div>出借图书</div>
+                <a href="{{ url_for('user.history_user') }}">
+                    <div>图书历史</div>
                 </a>
-                <a href="{{ url_for('admin.return_book') }}">
-                    <div>返还图书</div>
+                <a href="{{ url_for('user.user_detail') }}">
+                    <div>个人信息</div>
                 </a>
                 <a href="{{ url_for('admin.add_book') }}">
                     <div>添加图书</div>
@@ -92,10 +79,7 @@
                 <!-- 更多链接... -->
             </ul>
         </div>
-    {% else %}
-
-    {% endif %}
-    <div class="container" id="bbody" {% if current_route == "hide" %} style="margin-left: 0;"{% endif %}>
+    <div class="container" id="bbody" {% if current_route == "hide" %} style="margin-left: 0"{% endif %}>
 
         <div class="content">
             {% block body %}{% endblock %}

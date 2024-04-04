@@ -17,6 +17,8 @@ class UserModel(db.Model):
     card = db.Column(db.String(100), nullable=False, unique=True)
     # 管理员权限
     admin = db.Column(db.Integer, default=1, nullable=False)
+    # 手机号
+    phone = db.Column(db.String(20))
 
 
 class EmailCaptchaModel(db.Model):
