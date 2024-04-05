@@ -1,0 +1,38 @@
+{% extends "user_base.html" %}
+
+{% block title %}{{ user.username }}的图书历史{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/user.css') }}">
+
+{% endblock %}
+{% block body %}
+    <div class="col-10">
+        <ul class="question-ul" style="padding-left: 0">
+            {% for book in books %}
+                <li>
+                    <div class="side-question">
+                        <img class="side-question-avatar" src="../static/images/avatar.jpg" alt="">
+                    </div>
+                    <div class="question-main">
+                        <div class="question-title"><a
+                                href="{{ url_for('qa.qa_book_detail',qa_id = book.id) }}">{{ book.Name }}</a></div>
+                        <div class="book-tags">
+                            {% for tag in book.Tags %}
+                                <a href="{{ url_for('qa.search_tag',tag_name = tag.name) }}">
+                                    <button style="display: inline-block">{{ tag.name }}</button>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <div class="question-content">简介：{{ book.Synopsis }}</div>
+                        <div class="question-detail">
+                            <span class="question-author">作者：{{ book.Author }}</span>
+                            <span class="question-time">收录日期：{{ book.StorageTime }}</span>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

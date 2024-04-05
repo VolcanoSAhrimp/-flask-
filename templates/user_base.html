@@ -61,22 +61,15 @@
 <div class="parent-container" style="display: flex; flex-direction: row;">
         <div class="nav" style="width: 200px;">
             <ul class="left-nav">
+                <a href="{{ url_for('user.user_not_return') }}">
+                    <div>图书未还记录</div>
+                </a>
                 <a href="{{ url_for('user.history_user') }}">
                     <div>图书历史</div>
                 </a>
                 <a href="{{ url_for('user.user_detail') }}">
                     <div>个人信息</div>
                 </a>
-                <a href="{{ url_for('admin.add_book') }}">
-                    <div>添加图书</div>
-                </a>
-                <a href="{{ url_for('admin.add_tags') }}">
-                    <div>添加或者删除标签</div>
-                </a>
-                <a href="{{ url_for('admin.list_book') }}">
-                    <div>图书列表和修改</div>
-                </a>
-                <!-- 更多链接... -->
             </ul>
         </div>
     <div class="container" id="bbody" {% if current_route == "hide" %} style="margin-left: 0"{% endif %}>

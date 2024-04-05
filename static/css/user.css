@@ -6,3 +6,15 @@ ul[class="question-ul"] li {
     border-radius: 1vh;
     margin-bottom: 1vh;
 }
+.form-group.row {
+    height: 5vh;
+}
+.form-group.row label{
+    font-size: 2vh;
+    font-weight: bolder;
+}
+.form-group.row input,option,select{
+    font-size: 2vh;
+    font-weight: bold;
+}
+

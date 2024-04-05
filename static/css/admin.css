@@ -50,12 +50,19 @@ button[type="submit"][name="tagSubmit"]
     flex-grow: 1;
     margin: 10px;
 }
-
 .book-detail {
     border: #0dff0e solid 2px;
     border-radius: 30px;
     padding: 20px;
     margin: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 阴影颜色、模糊半径、偏移量和透明度 */
+  transition: box-shadow 0.3s ease; /* 添加过渡动画效果 */
+    display: flex; /* 使用 Flexbox 布局 */
+  justify-content: space-between; /* 子元素沿主轴均匀分布，两端对齐 */
+  align-items: center; /* 子元素沿交叉轴居中对齐 */
+}
+.book-detail:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 鼠标悬停时增强阴影效果 */
 }
 
 .left-nav {
@@ -116,4 +123,8 @@ div[class="green-book"] div{
     border: #0dff0e solid 2px;
     padding: 5px;
     font-weight: bolder;
+}
+.tag:hover{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 鼠标悬停时增强阴影效果 */
+    transition: box-shadow 0.3s ease; /* 添加过渡动画效果 */
 }

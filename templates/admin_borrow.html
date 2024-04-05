@@ -9,6 +9,14 @@
     </script>
     <script src="{{ url_for('static', filename='jquery/name.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <script>
+        $(document).ready(function () {
+            var alertMessage = "{{ alert_message }}";
+            if (alertMessage) {
+                alert(alertMessage);
+            }
+        });
+    </script>
 {% endblock %}
 {% block body %}
     <div class="form-space" style="background-color: white;border-radius: 20px;">

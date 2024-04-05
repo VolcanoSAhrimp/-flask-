@@ -26,14 +26,37 @@ def lend_book():
         card = form.get('libraryCardNo')
         bookid = form.get('bookID')
         bookTitle = form.get('bookTitle')
-        reader_id = UserModel.query.filter(UserModel.username == username).first().id
-        book_id = BooksModel.query.filter(BooksModel.Name == bookTitle).first().id
-        # print(f"reader_id={reader_id.id},book_id={book_id.id}",)
-        question = BorrowHistoryModel(reader_id=reader_id, book_id=book_id, borrow_date=datetime.now(),
-                                      return_date=None)
-        db.session.add(question)
-        db.session.commit()
-        return render_template('admin_borrow.html')
+        reader_book_info = (
+            db.session.query(
+                UserModel.id.label('reader_id'),
+                BooksModel.id.label('book_id')
+            )
+            .join(BooksModel, BooksModel.Name == bookTitle)
+            .filter(UserModel.username == username)
+            .first()
+        )
+
+        reader_id = reader_book_info.reader_id
+        book_id = reader_book_info.book_id
+
+        history = BorrowHistoryModel.query.filter_by(reader_id=reader_id, book_id=book_id).first()
+
+        if history and history.return_date:
+            # 如果存在借阅历史且已借出，返回警告信息
+            return render_template('admin_borrow.html', alert_message="你已经借出去，尚未归还！")
+
+        else:
+            question = BorrowHistoryModel(
+                reader_id=reader_id,
+                book_id=book_id,
+                borrow_date=datetime.now(),
+                return_date=None
+            )
+            db.session.add(question)
+            db.session.commit()
+
+            # 成功借阅，返回正常页面（可选择性地传递 alert_message）
+            return render_template('admin_borrow.html', alert_message="图书借阅成功！")
 
 
 @bp.route('/return_book', methods=['GET', 'POST'])
@@ -90,7 +113,10 @@ def search_book():
         # 根据用户ID查询该用户的借阅历史记录并关联到对应的书籍信息
         borrowed_books = (db.session.query(BooksModel)
                           .join(history_alias, BooksModel.id == history_alias.book_id)
-                          .filter(history_alias.reader_id == user.id).all())
+                          .filter(history_alias.reader_id == user.id,
+                                  history_alias.return_date.is_(None))
+                          # .filter(history_alias.return_date==None)
+                          .all())
 
         # 转换为 JSON 格式返回给前端
         book_list = [{'book_id': book.id, 'title': book.Name} for book in borrowed_books]
@@ -105,8 +131,8 @@ def del_book():
     library_card_no = request.form.get('libraryCardNo')
     bookId = request.form.get('bookId')
     reader_id = UserModel.query.filter_by(card=library_card_no).first().id
-    book = BorrowHistoryModel.query.filter_by(book_id=bookId, reader_id=reader_id).first()
-    db.session.delete(book)
+    book = BorrowHistoryModel.query.filter_by(book_id=bookId, reader_id=reader_id,return_date=None).first()
+    book.return_date=datetime.now()
     db.session.commit()
     print(reader_id, bookId)
     return jsonify({"success": "sss"})
