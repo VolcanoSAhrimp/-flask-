@@ -4,6 +4,10 @@
 
 {% block head %}
     <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    {#    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>#}
+    {#    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>#}
+    {#    <script src="https://cdn.socket.io/4.3.0/socket.io.min.js"></script>#}
+    <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
     <script>
         var searchNameUrl = "{{ url_for('admin.search_name') }}";
     </script>
@@ -16,18 +20,53 @@
                 alert(alertMessage);
             }
         });
+
+    </script>
+    <script>
+        var socket = io.connect('http://' + window.location.hostname + ':' + location.port);
+
+        // 监听服务器发来的更新事件
+        socket.on('input_value', function (data) {
+            console.log(data)
+            document.getElementById('libraryCardNo').value = data.value; // 更新输入框的值
+            // 设置定时器，在0.5秒后执行后续操作
+            setTimeout(function () {
+                triggerBlurEvent('libraryCardNo');
+            }, 500); // 延迟0.5秒
+        });
+
+
+
+        // 新增监听 'input_book_id_value' 事件
+        socket.on('input_book_id_value', function (data) {
+            console.log('Received book ID value:', data.value);
+            document.getElementById('bookID').value = data.value; // 更新输入框的值
+            // 如果需要，此处也可以添加类似触发 blur 事件的逻辑
+            setTimeout(function () {
+                triggerBlurEvent('bookID');
+            }, 500); // 延迟0.5秒
+        });
+        function triggerBlurEvent(data) {
+            // 触发模拟的'blur'事件以执行相关逻辑
+            $('#'+data).triggerHandler('blur');
+        }
+
     </script>
 {% endblock %}
 {% block body %}
     <div class="form-space" style="background-color: white;border-radius: 20px;">
         <div style="border: none;display: flex;">
-            <form action="{{ url_for('admin.lend_book') }}" method="post" name="borrowForm">
+            <form action="{{ url_for('admin.lend_book') }}" method="post" name="borrowForm" id="formw">
                 <div class="green-name">
                     <!-- 用户信息部分 -->
                     <h2>用户信息</h2>
                     <label for="libraryCardNo">图书馆卡号：</label>
                     <input type="text" id="libraryCardNo" name="libraryCardNo" required>
                     <br>
+                    <div id="scan-input-area">
+                        <input type="hidden" id="scan-result" name="scanResult">
+                        <span id="scan-display"></span>
+                    </div>
                     <label for="username">用户名：</label>
                     {#                <input type="text" id="username" name="username" required>#}
                     <input type="text" id="username" name="username" readonly>
@@ -48,3 +87,4 @@
     </div>
 
 {% endblock %}
+

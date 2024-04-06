@@ -93,8 +93,6 @@ def user_not_return():
         # .order_by(BorrowHistoryModel.borrow_date.desc())
         .all()
     )
-    # 初始化一个字典，用于合并具有相同图书ID的记录
-    merged_book_his = defaultdict(list)
     unique_books = set()
     books=[]
 

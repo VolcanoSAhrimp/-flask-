@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Data</title>
+    <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+</head>
+<body>
+<form id="formw">
+    <!-- 输入框或其他表单元素 -->
+    <input type="text" id="libraryCardNo"/>
+    <!-- 提交按钮等 -->
+    <button type="submit">Submit</button>
+</form>
+<form id="formb">
+    <!-- 输入框或其他表单元素 -->
+    <input type="text" id="bookNo"/>
+    <!-- 提交按钮等 -->
+    <button type="submit">Submit</button>
+</form>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var form = document.getElementById('formw');
+        var input = document.getElementById('libraryCardNo');
+        var formb = document.getElementById('formb');
+        var inputb = document.getElementById('bookNo');
+        if (form && input) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                socket.emit('input_value', input.value);
+                input.value = '';
+            });
+        } else {
+            console.error('Form or input elements not found in the DOM.');
+        }
+        if (formb && inputb) {
+            formb.addEventListener('submit', function (event) {
+                event.preventDefault();
+                socket.emit('input_book_id_value', inputb.value);
+                inputb.value = '';
+            });
+        } else {
+            console.error('Form or input elements not found in the DOM.');
+        }
+    });
+</script>
+</html>

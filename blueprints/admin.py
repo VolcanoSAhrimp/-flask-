@@ -35,16 +35,12 @@ def lend_book():
             .filter(UserModel.username == username)
             .first()
         )
-
         reader_id = reader_book_info.reader_id
         book_id = reader_book_info.book_id
-
         history = BorrowHistoryModel.query.filter_by(reader_id=reader_id, book_id=book_id).first()
-
         if history and history.return_date:
             # 如果存在借阅历史且已借出，返回警告信息
             return render_template('admin_borrow.html', alert_message="你已经借出去，尚未归还！")
-
         else:
             question = BorrowHistoryModel(
                 reader_id=reader_id,
@@ -131,8 +127,8 @@ def del_book():
     library_card_no = request.form.get('libraryCardNo')
     bookId = request.form.get('bookId')
     reader_id = UserModel.query.filter_by(card=library_card_no).first().id
-    book = BorrowHistoryModel.query.filter_by(book_id=bookId, reader_id=reader_id,return_date=None).first()
-    book.return_date=datetime.now()
+    book = BorrowHistoryModel.query.filter_by(book_id=bookId, reader_id=reader_id, return_date=None).first()
+    book.return_date = datetime.now()
     db.session.commit()
     print(reader_id, bookId)
     return jsonify({"success": "sss"})
@@ -202,7 +198,8 @@ def add_tags():
 def list_book():
     books = BooksModel.query.filter_by().all()
     print(books)
-    return render_template('list_book.html',books=books,current_route="hide")
+    return render_template('list_book.html', books=books, current_route="hide")
+
 
 @bp.route('/book_detail/<int:book_id>')
 def book_detail(book_id):
@@ -213,6 +210,7 @@ def book_detail(book_id):
     # data=DataFrame([vars(book_data) for book_data in book])
     # print(data)
     return render_template("update_book_detail.html", book=book)
+
 
 @bp.route('/update_book', methods=['POST'])
 def update_book():
@@ -226,7 +224,7 @@ def update_book():
     Author = q.form.get('Author')
     Price = q.form.get('Price')
     # Publisher = q.args.get('Publisher')
-    book=BooksModel.query.filter_by(id=id).first()
+    book = BooksModel.query.filter_by(id=id).first()
     # print(book)
     # 更新记录
     if book:
@@ -244,18 +242,19 @@ def update_book():
         return jsonify({"error": "sss"})
     # return jsonify({"books": bookName, 'tags': []})
 
+
 @bp.route('/del_tag')
 def del_tag():
     tagId = request.args.get('tag_id')
     bookId = request.args.get('book_id')
     # print(tagId,bookId)
-    tag=TagModel.query.filter_by(id=tagId).first()
+    tag = TagModel.query.filter_by(id=tagId).first()
     book = BooksModel.query.filter_by(id=bookId).first()
     try:
         tag.books.remove(book)
         db.session.commit()
-        return jsonify({"success":True})
+        return jsonify({"success": True})
     except Exception as e:
         db.session.rollback()  # 出现错误时回滚事务
         print(f"An error occurred: {e}")
-        return jsonify({"error":False})
+        return jsonify({"error": False})
