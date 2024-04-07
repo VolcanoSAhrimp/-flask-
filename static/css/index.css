@@ -4,6 +4,8 @@
     display: flex;
     background-color: #fff;
     border-bottom:1px solid #eee;
+    border-radius: 15px;
+    margin-bottom: 15px;
 }
 .side-question{
     flex-basis: 38px;

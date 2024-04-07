@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title%}图书列表{%endblock%}
+
+{% block head%}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/admin.css')}}">
+{% endblock%}
+{%block body%}
+     <div class="row" >
+            <div class="col-10" >
+                <ul class="question-ul" style="width: 150vh;">
+                    {% for user in users %}
+                        <li style="border-radius: 20px;margin-bottom: 10px">
+                        <div class="question-main">
+                            <div class="question-title" ><a href="{{url_for('admin.admin_user_detail',user_id = user.id)}}" >{{user.username}}</a></div>
+                                    <div style="display: inline-block">用户卡号：{{ user.card }}</div>
+                            <div class="question-content">用户id：{{ user.id}}</div>
+                            <div class="question-detail">
+{#                                <span class="question-author">作者：{{book.Author}}</span>#}
+                                <span class="question-time">加入日期：{{user.join_time}}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+{% endblock %}

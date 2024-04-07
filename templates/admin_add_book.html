@@ -7,14 +7,21 @@
     <script>
         var addNameUrl = "{{ url_for('admin.add_book') }}";
     </script>
-{#<script src="{{ url_for('static', filename='jquery/space-width.js') }}"></script>#}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-
+    #返回message并且输出
+    <script>
+        $(document).ready(function () {
+            var message = "{{ message }}";
+            if (message) {
+                alert(message);
+            }
+        });
+    </script>
 {% endblock %}
 {% block body %}
     <div class="form-space" style="background-color: white;border-radius: 20px;">
         <div style="border: none;display: flex;" id="addbook">
-            <form method="post" name="addForm" >
+            <form method="post" name="addForm" action="{{ url_for('admin.add_book') }}">
                 <div class="green-book">
                     <div>图书名:
                     <input type="text" id="Name" name="Name"></div>

@@ -10,7 +10,25 @@
     </script>
     <script src="{{ url_for('static', filename='jquery/tags-add.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery/del_tags.js') }}"></script>
+    <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://' + window.location.hostname + ':' + location.port);
 
+        // 监听服务器发来的更新事件
+        socket.on('input_book_id_value', function (data) {
+            console.log(data)
+            document.getElementById('bookID').value = data.value; // 更新输入框的值
+            // 设置定时器，在0.5秒后执行后续操作
+            setTimeout(function () {
+                triggerBlurEvent('bookID');
+            }, 500); // 延迟0.5秒
+        });
+
+        function triggerBlurEvent(data) {
+            // 触发模拟的'blur'事件以执行相关逻辑
+            $('#' + data).triggerHandler('blur');
+        }
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
 {% block body %}
@@ -27,7 +45,7 @@
                     <input type="text" id="bookTitle" name="bookTitle" readonly>
                 </div>
                 <div class="green-book" id="tags" style="display: none">
-{#                    显示已有标签内容#}
+                    {#                    显示已有标签内容#}
                 </div>
                 <div class="green-book" id="add-tag-div">
                     <label for="bookID">添加图书标签：</label>

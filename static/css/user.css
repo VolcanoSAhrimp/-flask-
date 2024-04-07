@@ -1,20 +1,25 @@
-ul[class="question-ul"]{
+ul[class="question-ul"] {
     width: 150vh;
+
 }
+
 ul[class="question-ul"] li {
-    width: 150vh;
+    width: 140vh;
     border-radius: 1vh;
     margin-bottom: 1vh;
+    margin-left: 1vh;
 }
+
 .form-group.row {
     height: 5vh;
 }
-.form-group.row label{
+
+.form-group.row label {
     font-size: 2vh;
     font-weight: bolder;
 }
-.form-group.row input,option,select{
+
+.form-group.row input, option, select {
     font-size: 2vh;
     font-weight: bold;
 }
-

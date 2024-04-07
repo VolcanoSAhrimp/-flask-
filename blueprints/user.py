@@ -1,6 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
-
+from decorators import check_user
 from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
 from sqlalchemy.orm import aliased
 
@@ -11,11 +11,13 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @bp.route('/')
+@check_user
 def index():
     return render_template("user_base.html")
 
 
 @bp.route('/history_user')
+@check_user
 def history_user():
     user_id = g.user.id
     # books = UserModel.query.filter_by(id=user_id).first().reader_server.order_by(BorrowHistoryModel.borrow_date.desc()).all()
@@ -48,6 +50,7 @@ def history_user():
 
 
 @bp.route('/user_detail')
+@check_user
 def user_detail():
     user_id = g.user.id
     user = UserModel.query.filter_by(id=user_id).first()
@@ -56,6 +59,7 @@ def user_detail():
 
 
 @bp.route('/user_update')
+@check_user
 def user_update():
     id = request.args.get('id')
     username = request.args.get('username')
@@ -73,17 +77,18 @@ def user_update():
         try:
             db.session.commit()
             message = "操作成功！"
-            return render_template("user_detail.html", user=user, alert_message=message)
+            return render_template("user_detail.html", userd=user, alert_message=message)
         except Exception as e:
             print(e)
             message = "操作失败！"
             db.session.rollback()
-            return render_template("user_detail.html", user=user, alert_message=message)
+            return render_template("user_detail.html", userd=user, alert_message=message)
     else:
         print(f"找不到名为{username}的用户")
-        return render_template("user_detail.html", user=user)
+        return render_template("user_detail.html", userd=user)
 
 @bp.route('/user_not_return')
+@check_user
 def user_not_return():
     user_id = g.user.id
     borrow_histories = (

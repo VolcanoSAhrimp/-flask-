@@ -1,7 +1,8 @@
 from datetime import datetime
-
+from decorators import check_admin,check_root
 from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
 from sqlalchemy.orm import aliased
+from sqlalchemy import not_
 
 from exts import db
 from models import BorrowHistoryModel, UserModel, BooksModel, TagModel
@@ -11,12 +12,14 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @bp.route('/index')
+@check_admin
 def index():
     return render_template('admin_borrow.html')
 
 
 # 图书出借
 @bp.route('/lend_book', methods=['GET', 'POST'])
+@check_admin
 def lend_book():
     if request.method == 'GET':
         return render_template('admin_borrow.html')
@@ -56,6 +59,7 @@ def lend_book():
 
 
 @bp.route('/return_book', methods=['GET', 'POST'])
+@check_admin
 def return_book():
     if request.method == 'GET':
         return render_template('admin_return.html')
@@ -148,7 +152,7 @@ def add_book():
         book = BooksModel(Name=Name, Author=Author, Publisher=Publisher, Synopsis=Synopsis, Price=Price)
         db.session.add(book)
         db.session.commit()
-        return jsonify({"success": "sss"})
+        return render_template('admin_add_book.html',message="图书添加成功")
 
 
 @bp.route('/search_tags', methods=['GET', 'POST'])
@@ -168,10 +172,11 @@ def search_tags():
             # print(tags)
             return jsonify({"books": bookName, "tags": tags})
         except:
-            return jsonify({"books": bookName, 'tags': []})
+            return jsonify({'tags': []})
 
 
 @bp.route('/add_tags', methods=['GET', 'POST'])
+@check_admin
 def add_tags():
     if request.method == 'GET':
         return render_template('add_tags.html')
@@ -195,6 +200,7 @@ def add_tags():
 
 
 @bp.route('/list_book', methods=['GET', 'POST'])
+@check_admin
 def list_book():
     books = BooksModel.query.filter_by().all()
     print(books)
@@ -202,6 +208,7 @@ def list_book():
 
 
 @bp.route('/book_detail/<int:book_id>')
+@check_admin
 def book_detail(book_id):
     # q = request.args.get('book_id')
     # book = BooksModel.query.filter_by(id=q).first()
@@ -258,3 +265,46 @@ def del_tag():
         db.session.rollback()  # 出现错误时回滚事务
         print(f"An error occurred: {e}")
         return jsonify({"error": False})
+
+@bp.route('/admin_user_purview')
+@check_root
+def admin_user_purview():
+    users=UserModel.query.filter(not_(UserModel.username=='root')).all()
+    print(users)
+    return render_template('admin_user_purview.html',users=users,current_route='hide')
+
+@bp.route('/admin_user_detail/<int:user_id>')
+@check_root
+def admin_user_detail(user_id):
+    user=UserModel.query.filter_by(id=user_id).first()
+
+    return render_template('admin_user_detail.html',user_admin=user)
+
+@bp.route('/user_update')
+@check_root
+def user_update():
+    id = request.args.get('id')
+    username = request.args.get('username')
+    email = request.args.get('email')
+    sex = request.args.get('sex')
+    admin = request.args.get('admin')
+    user = UserModel.query.filter_by(id=id).first()
+    if user:
+        user.username = username
+        user.email = email
+        user.sex = sex
+        user.admin = admin
+        user.email = email
+        # 提交数据库事务
+        try:
+            db.session.commit()
+            message = "操作成功！"
+            return render_template("admin_user_detail.html", user_admin=user, alert_message=message)
+        except Exception as e:
+            print(e)
+            message = "操作失败！"
+            db.session.rollback()
+            return render_template("admin_user_detail.html", user_admin=user, alert_message=message)
+    else:
+        print(f"找不到名为{username}的用户")
+        return render_template("admin_user_detail.html", user_admin=user)

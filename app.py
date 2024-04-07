@@ -51,12 +51,12 @@ def my_context_processor():
 
 @socketio.on('input_value')
 def input_value(data):
-    print(f"data:{data}")
+    print(f"user_data:{data}")
     socketio.emit('input_value', {'value': data})
 
 @socketio.on('input_book_id_value')
 def input_book_id_value(data):
-    print(f"data:{data}")
+    print(f"book_data:{data}")
     socketio.emit('input_book_id_value', {'value': data})
 
 # 如果作为主程序运行，运行该代码

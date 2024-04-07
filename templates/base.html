@@ -26,7 +26,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                {% if user.admin==2 %}
+                {% if user.admin in [2,3] and user%}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin.lend_book') }}">出借</a>
                     </li>
@@ -51,8 +51,8 @@
             <ul class="navbar-nav">
                 {% if user %}
                     <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('user.index') }}"><span href="#">{{ user.username }}</span></a>
-{#                        <span class="nav-link" href="#">{{ user.username }}</span>#}
+                        <a class="nav-link" href="{{ url_for('user.index') }}"><span href="#">{{ user.username }}</span></a>
+                        {#                        <span class="nav-link" href="#">{{ user.username }}</span>#}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">退出登录</a>
@@ -71,7 +71,7 @@
     </div>
 </nav>
 <div class="parent-container" style="display: flex; flex-direction: row;">
-    {% if user.admin==2 %}
+    {% if user.admin in [2,3] and user%}
         <div class="nav" style="width: 200px;">
             <ul class="left-nav">
                 <a href="{{ url_for('admin.lend_book') }}">
@@ -89,6 +89,11 @@
                 <a href="{{ url_for('admin.list_book') }}">
                     <div>图书列表和修改</div>
                 </a>
+                {% if user.admin == 3 and user%}
+                <a href="{{ url_for('admin.admin_user_purview') }}">
+                    <div>用户信息以权限修改</div>
+                </a>
+                    {% endif %}
                 <!-- 更多链接... -->
             </ul>
         </div>
