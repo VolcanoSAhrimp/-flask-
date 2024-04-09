@@ -1,7 +1,10 @@
 from flask import Blueprint, render_template, request
+from sqlalchemy.orm import aliased
 
-from models import BooksModel,TagModel
+from exts import db
+from models import BooksModel, TagModel
 from flask import Blueprint, render_template, request
+from flask_sqlalchemy import pagination
 
 from models import BooksModel, TagModel
 
@@ -24,29 +27,34 @@ def qa_book_detail(qa_id):
 
 @bp.route('/search')
 def search():
-    # 查询字符串的形式,/search?q=xxx
-    # /search/<q>
-    # post,request.from
+    page = request.args.get('page', 1, type=int)  # 获取当前页码，默认为1
+    per_page = 10  # 每页显示的数据条数
     q = request.args.get('BookName')
-    # books = QuestionModel.query.filter(QuestionModel.title.contains(q)).all()
-    books = BooksModel.query.filter(BooksModel.Name.contains(q)).all()
-    # data = pd.DataFrame([vars(book) for book in books])
-    # print(data)
-    return render_template("library-index.html", books=books)
+    books_query = BooksModel.query.filter(BooksModel.Name.contains(q))
+    pagination = books_query.paginate(page=page, per_page=per_page, error_out=False)
+    books = pagination.items
+    return render_template("library-index.html", books=books, pagination=pagination, q=q,mode="bookName")
+
+
 @bp.route('/search-tag')
 def search_tag():
     # 查询字符串的形式,/search?q=xxx
     # /search/<q>
     # post,request.from
-    tag = request.args.get('tag_name')
-    # books = QuestionModel.query.filter(QuestionModel.title.contains(q)).all()
-    # books = BooksModel.query.filter(BooksModel.Name.contains(q)).all()
-    books_tag = TagModel.query.filter_by(name=tag).all()
-    print(books_tag)
-    all_books = []
-    for book in books_tag:
-        all_books.extend(book.books)
-    print(all_books)
-    # data = pd.DataFrame([vars(book) for book in books])
-    # print(data)
-    return render_template("library-index.html", books=all_books)
+    # tag = request.args.get('tag_name')
+    # books_tag = TagModel.query.filter_by(name=tag).all()
+    # print(books_tag)
+    # all_books = []
+    # for book in books_tag:
+    #     print(book)
+    #     all_books.extend(book.books)
+    # # print(all_books)
+    # return render_template("library-index.html", books=all_books)
+    page = request.args.get('page', 1, type=int)  # 获取当前页码，默认为1
+    per_page = 10  # 每页显示的数据条数
+    tag_name = request.args.get('tag_name')
+    # 查询指定标签名称对应的标签对象
+    books = BooksModel.query.join(TagModel, BooksModel.Tags).filter(TagModel.name == tag_name).paginate(page=page, per_page=per_page, error_out=False)
+
+    print(books.items)
+    return render_template("library-index.html", books=books.items, pagination=books, q=tag_name,mode="tagName")

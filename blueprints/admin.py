@@ -3,7 +3,7 @@ from decorators import check_admin,check_root
 from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
 from sqlalchemy.orm import aliased
 from sqlalchemy import not_
-
+from flask_sqlalchemy import pagination
 from exts import db
 from models import BorrowHistoryModel, UserModel, BooksModel, TagModel
 from pandas import DataFrame
@@ -202,9 +202,15 @@ def add_tags():
 @bp.route('/list_book', methods=['GET', 'POST'])
 @check_admin
 def list_book():
-    books = BooksModel.query.filter_by().all()
-    print(books)
-    return render_template('list_book.html', books=books, current_route="hide")
+    # books = BooksModel.query.filter_by().all()
+    # print(books)
+    # return render_template('list_book.html', books=books, current_route="hide")
+    page = request.args.get('page', type=int, default=1)
+    per_page = 10  # 每页显示的数据条数，可以根据需要调整
+
+    books = BooksModel.query.paginate(page=page, per_page=per_page)
+
+    return render_template('list_book.html', books=books.items, pagination=books, current_route="hide")
 
 
 @bp.route('/book_detail/<int:book_id>')
@@ -269,9 +275,12 @@ def del_tag():
 @bp.route('/admin_user_purview')
 @check_root
 def admin_user_purview():
-    users=UserModel.query.filter(not_(UserModel.username=='root')).all()
-    print(users)
-    return render_template('admin_user_purview.html',users=users,current_route='hide')
+    page = request.args.get('page', type=int, default=1)
+    per_page = 10  # 每页显示的数据条数，可以根据需要调整
+
+    users=UserModel.query.filter(not_(UserModel.username=='root')).paginate(page=page, per_page=per_page)
+    print(users.items)
+    return render_template('admin_user_purview.html',users=users.items,pagination=users,current_route='hide')
 
 @bp.route('/admin_user_detail/<int:user_id>')
 @check_root
