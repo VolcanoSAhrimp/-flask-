@@ -202,13 +202,21 @@ def add_tags():
 @bp.route('/list_book', methods=['GET', 'POST'])
 @check_admin
 def list_book():
-    # books = BooksModel.query.filter_by().all()
-    # print(books)
-    # return render_template('list_book.html', books=books, current_route="hide")
+    # page = request.args.get('page', type=int, default=1)
+    # per_page = 10  # 每页显示的数据条数，可以根据需要调整
+    # books = BooksModel.query.paginate(page=page, per_page=per_page)
+    # return render_template('list_book.html', books=books.items, pagination=books, current_route="hide")
     page = request.args.get('page', type=int, default=1)
     per_page = 10  # 每页显示的数据条数，可以根据需要调整
+    search_query = request.args.get('q', type=str, default='')  # 获取搜索关键词
 
-    books = BooksModel.query.paginate(page=page, per_page=per_page)
+    if search_query:
+        books = BooksModel.query.filter(
+            BooksModel.Name.ilike(f'%{search_query}%') |
+            BooksModel.Author.ilike(f'%{search_query}%')
+        ).paginate(page=page, per_page=per_page)
+    else:
+        books = BooksModel.query.paginate(page=page, per_page=per_page)
 
     return render_template('list_book.html', books=books.items, pagination=books, current_route="hide")
 
@@ -275,12 +283,25 @@ def del_tag():
 @bp.route('/admin_user_purview')
 @check_root
 def admin_user_purview():
+    # page = request.args.get('page', type=int, default=1)
+    # per_page = 10  # 每页显示的数据条数，可以根据需要调整
+    # users=UserModel.query.filter(not_(UserModel.username=='root')).paginate(page=page, per_page=per_page)
+    # print(users.items)
+    # return render_template('admin_user_purview.html',users=users.items,pagination=users,current_route='hide')
     page = request.args.get('page', type=int, default=1)
     per_page = 10  # 每页显示的数据条数，可以根据需要调整
+    search_query = request.args.get('q', type=str, default='')  # 获取搜索关键词
 
-    users=UserModel.query.filter(not_(UserModel.username=='root')).paginate(page=page, per_page=per_page)
-    print(users.items)
-    return render_template('admin_user_purview.html',users=users.items,pagination=users,current_route='hide')
+    # 筛除 root 用户并根据搜索关键词过滤
+    query = UserModel.query.filter(not_(UserModel.username == 'root'))
+    if search_query:
+        query = query.filter(
+            UserModel.username.ilike(f'%{search_query}%') |
+            UserModel.email.ilike(f'%{search_query}%')
+        )
+
+    users = query.paginate(page=page, per_page=per_page)
+    return render_template('admin_user_purview.html', users=users.items, pagination=users, current_route='hide')
 
 @bp.route('/admin_user_detail/<int:user_id>')
 @check_root

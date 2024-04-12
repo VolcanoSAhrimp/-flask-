@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/admin.css') }}">
 {% endblock %}
 {% block body %}
+    <form action="{{ url_for('admin.list_book') }}" method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="搜索图书名称或作者...">
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </div>
+    </form>
     <div class="row">
         <div class="col-10">
             <ul class="question-ul" style="width: 150vh;">
