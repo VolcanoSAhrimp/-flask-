@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ username }}的未还图书列表{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
+    <script>
+        var returnBookUrl = "{{ url_for('admin.del_book') }}";
+    </script>
+    <script src="{{ url_for('static', filename='jquery/del_book.js') }}"></script>
+    <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://' + window.location.hostname + ':' + location.port);
+        // 新增监听 'input_book_id_value' 事件
+        socket.on('input_book_id_value', function (data) {
+            console.log('Received book ID value:', data.value);
+            var bookID = data.value; // 更新输入框的值
+            // 如果需要，此处也可以添加类似触发 blur 事件的逻辑
+            setTimeout(function () {
+                triggerReturnButtonClick(bookID);
+            }, 500); // 延迟0.5秒
+        });
+
+        function triggerReturnButtonClick(bookId) {
+            // 通过 data-book-id 属性值定位归还按钮元素
+            const returnButton = $('.return-book[data-book-id="' + bookId + '"]');
+
+            if (returnButton.length > 0) {
+                // 找到元素，触发点击事件
+                returnButton.trigger('click');
+            } else {
+                console.warn('未找到与指定图书ID匹配的归还按钮。');
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+{% block body %}
+    <div class="form-space" style="background-color: white;border-radius: 20px;">
+        <div style="border: none;display: flex;">
+        <input type="text" id="libraryCardNo" name="libraryCardNo" required value="{{ card }}" style="display: none">
+        <form action="{{ url_for('admin.lend_book') }}" method="post" name="borrowForm">
+            {% for book in books %}
+            <div class="book-detail">
+                <div>图书名称： {{ book.title }}  </div>
+                <div>图书ID： {{ book.book_id }} </div>
+                <div><a class="return-book return-book-button" data-book-id="{{ book.book_id }}">返还</a></div>
+            </div>
+            {% endfor %}
+        </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title%}图书列表{%endblock%}
+
+{% block head%}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/admin.css')}}">
+{% endblock%}
+{%block body%}
+    <form action="{{ url_for('admin.admin_user_purview') }}" method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="搜索用户名或邮箱...">
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </div>
+    </form>
+     <div class="row" >
+            <div class="col-10" >
+                <ul class="question-ul" style="width: 150vh;">
+                    {% for user in users %}
+                        <li style="border-radius: 20px;margin-bottom: 10px">
+                        <div class="question-main">
+                            <div class="question-title" ><a href="{{url_for('admin.admin_user_book_list',user_id = user.id)}}" >{{user.username}}</a></div>
+                                    <div style="display: inline-block">用户卡号：{{ user.card }}</div>
+                            <div class="question-content">用户id：{{ user.id}}</div>
+                            <div class="question-detail">
+{#                                <span class="question-author">作者：{{book.Author}}</span>#}
+                                <span class="question-time">加入日期：{{user.join_time}}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% if pagination %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="{{ url_for('admin.admin_user_purview', BookName=q, page=pagination.prev_num) }}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin.admin_user_purview', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="{{ url_for('qa.search', BookName=q, page=pagination.next_num) }}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

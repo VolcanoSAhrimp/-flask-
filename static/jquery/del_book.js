@@ -12,7 +12,7 @@ $(document).on('click', '.return-book', function(event) {
         data: {bookId: bookId, libraryCardNo: libraryCardNo},
         success: function (response) {
             if (response.success) {
-                alert('图书已成功归还！');
+                // alert('图书已成功归还！');
                 // 可能还需要在这里更新页面上的已借图书列表
                 // window.location.reload(true);
                 // 隐藏或删除当前书籍记录

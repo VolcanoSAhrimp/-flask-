@@ -154,3 +154,24 @@ ul[class=question-ul] li{
     font-weight: bolder;
     font-size: 2vh;
 }
+.return-book-button {
+    /* 设置背景颜色 */
+    background-color: #4CAF50; /* 示例绿色，可更换为您喜欢的颜色 */
+    color: #fff; /* 文字颜色为白色 */
+    padding: 8px 16px; /* 内边距 */
+    border-radius: 4px; /* 圆角 */
+    text-decoration: none; /* 去掉下划线 */
+    font-size: 14px; /* 字体大小 */
+    line-height: 1; /* 行高 */
+    cursor: pointer; /* 鼠标指针变为手形 */
+    margin-top: 8px; /* 上边距，与其他内容间隔开 */
+
+    /* 悬停效果 */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.return-book-button:hover {
+    background-color: #45a049; /* 鼠标悬停时，背景颜色变深 */
+    color: #fff; /* 保持文字颜色为白色 */
+     text-decoration: none; /* 去掉下划线 */
+}

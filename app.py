@@ -1,21 +1,22 @@
 # 导入所需模块和类
-import json
 
-from flask import Flask, session, g, request, jsonify
+from flask import Flask, session, g
+from flask_migrate import Migrate
+from flask_socketio import SocketIO
+
 import config
+from blueprints.admin import bp as admin_bp
+from blueprints.auth import bp as auth_bp
+from blueprints.qa import bp as qa_bp
+from blueprints.simulation import bp as simulation_bp
+from blueprints.user import bp as user_bp
 from exts import db, mail
 from models import UserModel
-from blueprints.qa import bp as qa_bp
-from blueprints.auth import bp as auth_bp
-from blueprints.admin import bp as admin_bp
-from blueprints.user import bp as user_bp
-from blueprints.simulation import bp as simulation_bp
-from flask_migrate import Migrate
-from flask_socketio import emit, SocketIO, join_room, leave_room
 
 # 创建Flask应用实例
 app = Flask(__name__)
 socketio = SocketIO(app)
+
 # 绑定配置文件
 app.config.from_object(config)
 
@@ -54,10 +55,12 @@ def input_value(data):
     print(f"user_data:{data}")
     socketio.emit('input_value', {'value': data})
 
+
 @socketio.on('input_book_id_value')
 def input_book_id_value(data):
     print(f"book_data:{data}")
     socketio.emit('input_book_id_value', {'value': data})
+
 
 # 如果作为主程序运行，运行该代码
 if __name__ == '__main__':

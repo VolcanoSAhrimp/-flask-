@@ -1,11 +1,4 @@
-from datetime import datetime
-
-from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
-from sqlalchemy.orm import aliased
-
-from exts import db
-from models import BorrowHistoryModel, UserModel, BooksModel, TagModel
-from pandas import DataFrame
+from flask import Blueprint, render_template
 
 bp = Blueprint('simulation', __name__, url_prefix='/simulation')
 

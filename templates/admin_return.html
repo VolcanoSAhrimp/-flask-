@@ -25,10 +25,30 @@
                 triggerBlurEvent('libraryCardNo');
             }, 500); // 延迟0.5秒
         });
+        // 新增监听 'input_book_id_value' 事件
+        socket.on('input_book_id_value', function (data) {
+            console.log('Received book ID value:', data.value);
+            var bookID = data.value; // 更新输入框的值
+            // 如果需要，此处也可以添加类似触发 blur 事件的逻辑
+            setTimeout(function () {
+                triggerReturnButtonClick(bookID);
+            }, 500); // 延迟0.5秒
+        });
         function triggerBlurEvent(data) {
             // 触发模拟的'blur'事件以执行相关逻辑
             $('#'+data).triggerHandler('blur');
         }
+        function triggerReturnButtonClick(bookId) {
+    // 通过 data-book-id 属性值定位归还按钮元素
+    const returnButton = $('.return-book[data-book-id="' + bookId + '"]');
+
+    if (returnButton.length > 0) {
+        // 找到元素，触发点击事件
+        returnButton.trigger('click');
+    } else {
+        console.warn('未找到与指定图书ID匹配的归还按钮。');
+    }
+}
     </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}

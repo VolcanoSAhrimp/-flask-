@@ -1,11 +1,10 @@
 from collections import defaultdict
-from datetime import datetime
-from decorators import check_user
-from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
-from sqlalchemy.orm import aliased
 
+from flask import Blueprint, render_template, request, g
+
+from decorators import check_user
 from exts import db
-from models import BorrowHistoryModel, UserModel, BooksModel, TagModel
+from models import BorrowHistoryModel, UserModel
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -37,7 +36,7 @@ def history_user():
     # 初始化一个字典，用于合并具有相同图书ID的记录
     merged_book_his = defaultdict(list)
     unique_books = set()
-    books=[]
+    books = []
     # print(borrow_histories)
     for borrow_history in borrow_histories:
         book = borrow_history.books
@@ -87,6 +86,7 @@ def user_update():
         print(f"找不到名为{username}的用户")
         return render_template("user_detail.html", userd=user)
 
+
 @bp.route('/user_not_return')
 @check_user
 def user_not_return():
@@ -99,7 +99,7 @@ def user_not_return():
         .all()
     )
     unique_books = set()
-    books=[]
+    books = []
 
     for borrow_history in borrow_histories:
         book = borrow_history.books
