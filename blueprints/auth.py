@@ -28,8 +28,6 @@ def login():
                 print("邮箱不存在")
                 return redirect(url_for("auth.login"))
             if check_password_hash(user.password,password):
-                #cookie:
-                #flask的session，是经过加密存储在浏览器的cookie中
                 session['user_id'] = user.id
                 return redirect("/")
             else:

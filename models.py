@@ -1,5 +1,3 @@
-from sqlalchemy import ForeignKey
-
 from exts import db
 from datetime import datetime
 
@@ -28,30 +26,6 @@ class EmailCaptchaModel(db.Model):
     captcha = db.Column(db.String(100), nullable=False)  # unique非空
     # used=db.Column(db.Boolean, default=False)
 
-
-# class QuestionModel(db.Model):
-#     __tablename__ = 'question'
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     title = db.Column(db.String(100),nullable=False)
-#     content = db.Column(db.Text, nullable=False)
-#     content_time = db.Column(db.DateTime, default=datetime.now)
-#
-#     #外键
-#     author_id=db.Column(db.Integer, db.ForeignKey('user.id'))
-#     author = db.relationship(UserModel,backref="questions")
-#
-# class AnswerModel(db.Model):
-#     __tablename__ = 'answer'
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     content = db.Column(db.String(100), nullable=False)
-#     created_time = db.Column(db.DateTime, default=datetime.now)
-#
-#     #外键
-#     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
-#     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#
-#     question = db.relationship(QuestionModel,backref=db.backref("answers",order_by=created_time.desc))
-#     author = db.relationship(UserModel,backref="authors")
 
 class TagModel(db.Model):
     __tablename__ = 'tags'
@@ -89,25 +63,11 @@ class BooksModel(db.Model):
     StockCount = db.Column(db.Integer, nullable=False, default=0)  # 馆藏册数
     AvailableCopies = db.Column(db.Integer, nullable=False, default=0)  # 在馆册数
     BorrowedTimes = db.Column(db.Integer, nullable=False, default=0)  # 被借次数
-    # Tags = db.relationship(TagModel, secondary="book_tags",backref=db.backref('books', lazy='dynamic'))
     Tags = db.relationship(TagModel, secondary="book_tags", backref=db.backref('books'))
 
 
 class BorrowHistoryModel(db.Model):
-    """
-    借阅历史记录模型类，用于映射数据库中的borrow_history表。
 
-    属性:
-    id: 主键，自动递增的整数。
-    reader_id: 外键，关联到ReaderModel的id字段，表示借阅者的ID。
-    book_id: 外键，关联到BooksModel的id字段，表示被借阅书籍的ID。
-    borrow_date: 借书日期，DateTime类型，默认为当前时间。
-    return_date: 还书日期，DateTime类型，可为空（表示尚未归还）。
-
-    关联关系：
-    reader: 通过reader_id与ReaderModel建立一对多关系。
-    book: 通过book_id与BooksModel建立一对多关系。
-    """
     __tablename__ = 'borrow_history'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -115,10 +75,8 @@ class BorrowHistoryModel(db.Model):
     reader_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
 
-    borrow_date = db.Column(db.DateTime, default=datetime.now)
-    return_date = db.Column(db.DateTime, nullable=True)
-
+    borrow_date = db.Column(db.Date, default=datetime.now)
+    return_date = db.Column(db.Date, nullable=True)
 
     reader = db.relationship(UserModel, backref="reader_server")
-    books = db.relationship(BooksModel, backref="book_file")
-
+    books = db.relationship(BooksModel, backref=db.backref('book_file', lazy='dynamic'))

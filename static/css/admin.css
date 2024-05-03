@@ -30,8 +30,7 @@ form[name="borrowForm"] input {
 
 button[type="submit"][name="borrowSubmit"],
 button[type="submit"][name="bookSubmit"],
-button[type="submit"][name="tagSubmit"]
-{
+button[type="submit"][name="tagSubmit"] {
     display: block;
     width: 100%;
     padding: 0.75rem;
@@ -50,19 +49,21 @@ button[type="submit"][name="tagSubmit"]
     flex-grow: 1;
     margin: 10px;
 }
+
 .book-detail {
     border: #0dff0e solid 2px;
     border-radius: 30px;
     padding: 20px;
     margin: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 阴影颜色、模糊半径、偏移量和透明度 */
-  transition: box-shadow 0.3s ease; /* 添加过渡动画效果 */
+    transition: box-shadow 0.3s ease; /* 添加过渡动画效果 */
     display: flex; /* 使用 Flexbox 布局 */
-  justify-content: space-between; /* 子元素沿主轴均匀分布，两端对齐 */
-  align-items: center; /* 子元素沿交叉轴居中对齐 */
+    justify-content: space-between; /* 子元素沿主轴均匀分布，两端对齐 */
+    align-items: center; /* 子元素沿交叉轴居中对齐 */
 }
+
 .book-detail:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 鼠标悬停时增强阴影效果 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 鼠标悬停时增强阴影效果 */
 }
 
 .left-nav {
@@ -70,21 +71,28 @@ button[type="submit"][name="tagSubmit"]
     background-color: #f1f1f1;
     min-height: 100%; /* 确保导航栏高度与容器高度相同 */
     box-sizing: border-box;
-    padding: 20px; /* 添加内边距 */
+    padding: 10px; /* 减少内边距 */
 }
 
 .left-nav div {
-    border: #0dff0e solid 2px;
+    border: #0dff0e solid 1px; /* 减小边框宽度 */
     border-radius: 10px;
-    padding: 10px;
+    padding: 5px; /* 减小内边距 */
     flex-grow: 1;
-    margin: 5px;
-    font-size: 30px;
+    margin: 2px; /* 缩小外边距 */
+    font-size: 24px; /* 减小字体大小 */
     font-family: "思源黑体 CN Medium";
 }
 
 .left-nav a {
     text-decoration: none;
+    color: black;
+}
+
+.left-nav a:focus,
+.left-nav a:active {
+    background-color: black;
+    color: red;
 }
 
 .left-nav a:hover { /* 当鼠标悬停时移除下划线 */
@@ -101,30 +109,35 @@ a:active {
     padding: 20px; /* 添加内边距 */
 }
 
-div[class="green-book"] input[type="text"]{
+div[class="green-book"] input[type="text"] {
     width: calc(100%);
-     box-sizing: border-box; /* 确保边框和内填充包含在总宽度内 */
+    box-sizing: border-box; /* 确保边框和内填充包含在总宽度内 */
 }
-div[class="green-book"] div{
+
+div[class="green-book"] div {
     font-size: 30px;
     font-family: "思源黑体 CN Medium", serif;
 }
-.tag{
+
+.tag {
     display: inline-block;
 }
-.black-border{
+
+.black-border {
     border: black 1px solid;
     border-radius: 10px;
     margin: 5px;
     padding: 5px;
 }
-.book-tags div{
+
+.book-tags span {
     border-radius: 5px;
     border: #0dff0e solid 2px;
     padding: 5px;
     font-weight: bolder;
 }
-.tag:hover,li:hover{
+
+.tag:hover, li:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 鼠标悬停时增强阴影效果 */
     transition: box-shadow 0.3s ease; /* 添加过渡动画效果 */
 }
@@ -136,24 +149,23 @@ div[class="green-book"] div{
     /*max-width: 600px;*/
     margin: 0 auto;
 }
+
 #addbook form {
     display: flex;
     flex-direction: column;
 }
-/*#addbook form div {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    align-items: baseline;*/
-/*    gap: 0.5rem;*/
-/*}*/
-ul[class=question-ul] li{
+
+
+ul[class=question-ul] li {
     margin-right: 10px;
     margin-top: 10px;
 }
-.question-content{
+
+.question-content {
     font-weight: bolder;
     font-size: 2vh;
 }
+
 .return-book-button {
     /* 设置背景颜色 */
     background-color: #4CAF50; /* 示例绿色，可更换为您喜欢的颜色 */
@@ -173,5 +185,54 @@ ul[class=question-ul] li{
 .return-book-button:hover {
     background-color: #45a049; /* 鼠标悬停时，背景颜色变深 */
     color: #fff; /* 保持文字颜色为白色 */
-     text-decoration: none; /* 去掉下划线 */
+    text-decoration: none; /* 去掉下划线 */
+}
+
+.book-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.book-list-table th,
+.book-list-table td {
+    padding: 0.75rem;
+    text-align: left;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+}
+
+.book-cover-th,
+.book-cover-td {
+    width: 80px;
+    max-width: 80px;
+    min-width: 80px;
+}
+
+.book-cover-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.tag-inline {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.book-tags-td {
+    /* ... 其他已有样式 ... */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    vertical-align: top;
+    height: auto;
+}
+
+.main-container { /* 选择适用的最外层容器 */
+    place-items: center;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f5f5f5;
+    margin: 0 0 0 10vw;
 }

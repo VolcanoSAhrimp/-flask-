@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ username }}的未还图书列表{% endblock %}
+{% block title %}{{ target.username }}的借阅记录{% endblock %}
 
 {% block head %}
     <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
@@ -20,7 +20,6 @@
                 triggerReturnButtonClick(bookID);
             }, 500); // 延迟0.5秒
         });
-
         function triggerReturnButtonClick(bookId) {
             // 通过 data-book-id 属性值定位归还按钮元素
             const returnButton = $('.return-book[data-book-id="' + bookId + '"]');
@@ -36,19 +35,54 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
 {% block body %}
-    <div class="form-space" style="background-color: white;border-radius: 20px;">
-        <div style="border: none;display: flex;">
-        <input type="text" id="libraryCardNo" name="libraryCardNo" required value="{{ card }}" style="display: none">
-        <form action="{{ url_for('admin.lend_book') }}" method="post" name="borrowForm">
-            {% for book in books %}
-            <div class="book-detail">
-                <div>图书名称： {{ book.title }}  </div>
-                <div>图书ID： {{ book.book_id }} </div>
-                <div><a class="return-book return-book-button" data-book-id="{{ book.book_id }}">返还</a></div>
-            </div>
+    <h1 style="text-align: center">{{ target.username }}的借阅记录</h1>
+    <div class="row">
+        <table class="book-list-table">
+            <thead>
+            <tr>
+                {#                <th class="book-cover-th">用户名称</th>#}
+                {#                <th class="book-cover-th">用户卡号</th>#}
+                <th class="book-title-th">书名</th>
+                <th class="book-tags-th">标签</th>
+                <th class="book-id-th">图书ID</th>
+                <th class="book-author-th">作者</th>
+                <th class="book-author-th">借出时间</th>
+                <th class="book-author-th">归还时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#            {% for user in users %}#}
+            {% for book in users %}
+                <tr>
+                    {#                        <td class="book-cover-td">#}
+                    {#                            {{ user.username }}#}
+                    {#                        </td>#}
+                    {#                        <td class="book-author-td">#}
+                    {#                            {{ user.card }}#}
+                    {#                        </td>#}
+                    <td class="book-title-td">
+                        <a href="{{ url_for('admin.book_detail', book_id=book.book_id) }}">{{ book.books.Name }}</a>
+                    </td>
+                    <td class="book-tags-td book-tags">
+                        {% for tag in book.books.Tags %}
+                            <span class="tag-inline">{{ tag.name }}</span>
+                        {% endfor %}
+                    </td>
+                    <td class="book-id-td">{{ book.book_id }}</td>
+                    <td class="book-author-td">{{ book.books.Author }}</td>
+                    <td class="book-author-td">{{ book.borrow_date }}</td>
+                    {% if book.return_date %}
+                        <td class="book-author-td">{{ book.return_date }}</td>
+                    {% else %}
+                        <td class="book-author-td">
+                            {#                        <button class="return-book" data-book-id="{{ book.book_id }}">归还</button>#}
+                            尚未归还
+                        </td>
+                    {% endif %}
+                </tr>
             {% endfor %}
-        </form>
-        </div>
+            {#            {% endfor %}#}
+            </tbody>
+        </table>
     </div>
-
 {% endblock %}

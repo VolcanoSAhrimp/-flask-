@@ -10,7 +10,7 @@
     <div style="background-color: white;border-radius: 20px">
         <div class="book-container">
             <div class="book-image-container">
-                <img alt="image" src="{{url_for('static',filename='images/avatar.jpg')}}" />
+                <img alt="image" src="{{url_for('static',filename='images/'+book.Cover)}}" />
             </div>
             <div class="book-info-container green-border">
                 <h1>书名：{{book.Name}}</h1>

@@ -1,12 +1,14 @@
+import os
 from datetime import datetime
-from decorators import check_admin, check_root
-from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
-from sqlalchemy.orm import aliased
+
+from flask import Blueprint, render_template, request, jsonify, current_app
 from sqlalchemy import not_
-from flask_sqlalchemy import pagination
+from sqlalchemy.orm import aliased
+from werkzeug.utils import secure_filename
+
+from decorators import check_admin, check_root
 from exts import db
 from models import BorrowHistoryModel, UserModel, BooksModel, TagModel
-from pandas import DataFrame
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -24,57 +26,21 @@ def lend_book():
     if request.method == 'GET':
         return render_template('admin_borrow.html')
     else:
-        # form = request.form
-        # username = form.get('username')
-        # card = form.get('libraryCardNo')
-        # bookid = form.get('bookID')
-        # print(bookid)
-        # bookTitle = form.get('bookTitle')
-        # reader_book_info = (
-        #     db.session.query(
-        #         UserModel.id.label('reader_id'),
-        #         BooksModel.id.label('book_id')
-        #     )
-        #     .join(BooksModel, BooksModel.id == bookid)
-        #     .filter(UserModel.username == username)
-        #     .first()
-        # )
-        # reader_id = reader_book_info.reader_id
-        # book_id = reader_book_info.book_id
-        # history = BorrowHistoryModel.query.filter_by(reader_id=reader_id, book_id=book_id).first()
-        # if history and history.return_date:
-        #     # 如果存在借阅历史且已借出，返回警告信息
-        #     return render_template('admin_borrow.html', alert_message="你已经借出去，尚未归还！")
-        # else:
-        #     question = BorrowHistoryModel(
-        #         reader_id=reader_id,
-        #         book_id=book_id,
-        #         borrow_date=datetime.now(),
-        #         return_date=None
-        #     )
-        #     db.session.add(question)
-        #     db.session.commit()
-        #
-        #     # 成功借阅，返回正常页面（可选择性地传递 alert_message）
-        #     return render_template('admin_borrow.html', alert_message="图书借阅成功！")
         form = request.form
         username = form.get('username')
         card = form.get('libraryCardNo')
         bookid = form.get('bookID')
         print(bookid)
         bookTitle = form.get('bookTitle')
-
         # 查询当前图书的借阅状态
         existing_loan = (
             BorrowHistoryModel.query
             .filter(BorrowHistoryModel.book_id == bookid, BorrowHistoryModel.return_date.is_(None))
             .first()
         )
-
         if existing_loan:
             # 图书已被借出且未归还，返回警告信息
             return render_template('admin_borrow.html', alert_message="该图书已被借出，尚未归还！")
-
         # 查询读者信息
         reader_book_info = (
             db.session.query(
@@ -85,10 +51,8 @@ def lend_book():
             .filter(UserModel.username == username)
             .first()
         )
-
         reader_id = reader_book_info.reader_id
         book_id = reader_book_info.book_id
-
         # 添加新的借阅记录
         new_loan = BorrowHistoryModel(
             reader_id=reader_id,
@@ -98,7 +62,6 @@ def lend_book():
         )
         db.session.add(new_loan)
         db.session.commit()
-
         # 成功借阅，返回正常页面（传递 alert_message）
         return render_template('admin_borrow.html', alert_message="图书借阅成功！")
 
@@ -116,7 +79,6 @@ def return_book():
         bookTitle = form.get('bookTitle')
         reader_id = UserModel.query.filter(UserModel.username == username).first().id
         book_id = BooksModel.query.filter(BooksModel.Name == bookTitle).first().id
-        # print(f"reader_id={reader_id.id},book_id={book_id.id}",)
         question = BorrowHistoryModel(reader_id=reader_id, book_id=book_id, borrow_date=datetime.now(),
                                       return_date=None)
         db.session.add(question)
@@ -194,7 +156,14 @@ def add_book():
         Publisher = request.form.get('Publisher')
         Synopsis = request.form.get('Synopsis')
         Price = request.form.get('Price')
-        book = BooksModel(Name=Name, Author=Author, Publisher=Publisher, Synopsis=Synopsis, Price=Price)
+        cover_image = request.files['CoverImage']
+        if cover_image:
+            filename = secure_filename(cover_image.filename)  # 使用安全的文件名
+            cover_image.save(os.path.join(current_app.root_path, 'static/images', filename))  # 保存到images文件夹
+            Cover = filename  # 将保存后的文件名赋值给变量Cover
+        else:
+            Cover = None  # 如果未上传封面，则设置为None
+        book = BooksModel(Name=Name, Author=Author, Publisher=Publisher, Synopsis=Synopsis, Price=Price,Cover=Cover)
         db.session.add(book)
         db.session.commit()
         return render_template('admin_add_book.html', message="图书添加成功")
@@ -247,12 +216,8 @@ def add_tags():
 @bp.route('/list_book', methods=['GET', 'POST'])
 @check_admin
 def list_book():
-    # page = request.args.get('page', type=int, default=1)
-    # per_page = 10  # 每页显示的数据条数，可以根据需要调整
-    # books = BooksModel.query.paginate(page=page, per_page=per_page)
-    # return render_template('list_book.html', books=books.items, pagination=books, current_route="hide")
     page = request.args.get('page', type=int, default=1)
-    per_page = 10  # 每页显示的数据条数，可以根据需要调整
+    per_page = 15  # 每页显示的数据条数，可以根据需要调整
     search_query = request.args.get('q', type=str, default='')  # 获取搜索关键词
 
     if search_query:
@@ -269,29 +234,20 @@ def list_book():
 @bp.route('/book_detail/<int:book_id>')
 @check_admin
 def book_detail(book_id):
-    # q = request.args.get('book_id')
-    # book = BooksModel.query.filter_by(id=q).first()
     book = BooksModel.query.filter_by(id=book_id).first()
-    # print(book.Name)
-    # data=DataFrame([vars(book_data) for book_data in book])
-    # print(data)
     return render_template("update_book_detail.html", book=book)
 
 
 @bp.route('/update_book', methods=['POST'])
 def update_book():
     q = request
-    # print(q)
     id = q.form.get('id')
-    print(id)
     name = q.form.get('bookName')
     Publisher = q.form.get('Publisher')
     Synopsis = q.form.get('Synopsis')
     Author = q.form.get('Author')
     Price = q.form.get('Price')
-    # Publisher = q.args.get('Publisher')
     book = BooksModel.query.filter_by(id=id).first()
-    # print(book)
     # 更新记录
     if book:
         book.Name = name
@@ -299,14 +255,12 @@ def update_book():
         book.Author = Author
         book.Price = Price
         book.Publisher = Publisher
-
         # 提交数据库事务（如果你使用的是支持事务的ORM，如SQLAlchemy）
         db.session.commit()
         return jsonify({"success": "sss"})
     else:
         print(f"找不到名为《{name}》的图书")
         return jsonify({"error": "sss"})
-    # return jsonify({"books": bookName, 'tags': []})
 
 
 @bp.route('/del_tag')
@@ -329,15 +283,9 @@ def del_tag():
 @bp.route('/admin_user_purview')
 @check_root
 def admin_user_purview():
-    # page = request.args.get('page', type=int, default=1)
-    # per_page = 10  # 每页显示的数据条数，可以根据需要调整
-    # users=UserModel.query.filter(not_(UserModel.username=='root')).paginate(page=page, per_page=per_page)
-    # print(users.items)
-    # return render_template('admin_user_purview.html',users=users.items,pagination=users,current_route='hide')
     page = request.args.get('page', type=int, default=1)
-    per_page = 10  # 每页显示的数据条数，可以根据需要调整
+    per_page = 20  # 每页显示的数据条数，可以根据需要调整
     search_query = request.args.get('q', type=str, default='')  # 获取搜索关键词
-
     # 筛除 root 用户并根据搜索关键词过滤
     query = UserModel.query.filter(not_(UserModel.username == 'root'))
     if search_query:
@@ -345,7 +293,6 @@ def admin_user_purview():
             UserModel.username.ilike(f'%{search_query}%') |
             UserModel.email.ilike(f'%{search_query}%')
         )
-
     users = query.paginate(page=page, per_page=per_page)
     return render_template('admin_user_purview.html', users=users.items, pagination=users, current_route='hide')
 
@@ -388,42 +335,73 @@ def user_update():
         return render_template("admin_user_detail.html", user_admin=user)
 
 
-@bp.route('/admin_user_borrow')
+@bp.route('/admin_user_borrow', methods=['GET', 'POST'])
 @check_root
 def admin_user_borrow():
-        page = request.args.get('page', type=int, default=1)
-        per_page = 10  # 每页显示的数据条数，可以根据需要调整
-        search_query = request.args.get('q', type=str, default='')  # 获取搜索关键词
+    return render_template('admin_user_brrow_detail.html', tags=TagModel.query.all())
 
-        # 筛除 root 用户并根据搜索关键词过滤
-        query = UserModel.query.filter(not_(UserModel.username == 'root'))
-        if search_query:
-            query = query.filter(
-                UserModel.username.ilike(f'%{search_query}%') |
-                UserModel.email.ilike(f'%{search_query}%')
-            )
 
-        users = query.paginate(page=page, per_page=per_page)
-        return render_template('admin_user_brrow_detail.html', users=users.items, pagination=users,
-                               current_route='hide')
-
-@bp.route('/admin_user_borrow/<int:user_id>', methods=['GET', 'POST'])
+@bp.route('/admin_user_book_list', methods=['GET', 'POST'])
 @check_root
-def admin_user_book_list(user_id):
-    # 首先根据卡号查询用户ID
-    user = UserModel.query.filter_by(id=user_id).first()
-    if user:
-        # 创建一个别名以方便查询关联的借阅历史记录
-        history_alias = aliased(BorrowHistoryModel)
+def admin_user_book_list():
+    filtered_books = []
+    if request.method == 'POST':
+        search_type = request.form.get('search_type')
+        search_value = request.form.get('search_value').strip()
+        selected_tags = request.form.getlist('tags[]')
+        selected_tags = [int(tag) for tag in selected_tags]
+        borrow_start = request.form.get('borrow_start')
+        if borrow_start:
+            borrow_start = datetime.fromisoformat(borrow_start).date()
+        else:
+            # 处理空值情况，如设置默认值、抛出异常、返回错误提示等
+            borrow_start = None  # 示例：设置为None或默认日期
+        borrow_end = request.form.get('borrow_end')
+        if borrow_end:
+            borrow_end = datetime.fromisoformat(borrow_end).date()
+        else:
+            # 处理空值情况，如设置默认值、抛出异常、返回错误提示等
+            borrow_end = None  # 示例：设置为None或默认日期
+        return_start = request.form.get('return_start')
+        if return_start:
+            return_start = datetime.fromisoformat(return_start).date()
+        else:
+            # 处理空值情况，如设置默认值、抛出异常、返回错误提示等
+            return_start = None  # 示例：设置为None或默认日期
+        return_end = request.form.get('return_end')
+        if return_end:
+            return_end = datetime.fromisoformat(return_end).date()
+        else:
+            # 处理空值情况，如设置默认值、抛出异常、返回错误提示等
+            return_end = None  # 示例：设置为None或默认日期
+        # 根据搜索条件构造查询
+        query = UserModel.query
+        if search_type == 'username':
+            query = query.filter(UserModel.username.contains(search_value))
+        elif search_type == 'card':
+            query = query.filter(UserModel.card.contains(search_value))
+        user = query.first()
+        filtered_books = []
+        for book in user.reader_server:
+            tags=[]
+            if selected_tags:
+                tags = [i.id for i in book.books.Tags]
+                if not any(tag in selected_tags for tag in tags):  # 反转条件，保留包含指定标签的书
+                    continue
 
-        # 根据用户ID查询该用户的借阅历史记录并关联到对应的书籍信息
-        borrowed_books = (db.session.query(BooksModel)
-                          .join(history_alias, BooksModel.id == history_alias.book_id)
-                          .filter(history_alias.reader_id == user.id,
-                                  history_alias.return_date.is_(None))
-                          # .filter(history_alias.return_date==None)
-                          .all())
-        # 转换为 JSON 格式返回给前端
-        book_list = [{'book_id': book.id, 'title': book.Name} for book in borrowed_books]
-        print(book_list)
-    return render_template("admin_user_book_list.html",books=book_list,username=user.username,card=user.card)
+            if all([borrow_start, borrow_end]):
+                bor = book.borrow_date
+                if not borrow_start <= bor <= borrow_end:
+                    continue
+
+            if all([return_start, return_end]):
+                retu = book.return_date
+                if retu is not None:
+                    if not return_start <= retu <= return_end:
+                        continue
+            filtered_books.append(book)
+
+    else:
+        filtered_books = []
+    print(filtered_books)
+    return render_template('admin_user_book_list.html', users=filtered_books,target=user)

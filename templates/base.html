@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap.4.6.min.css') }}">
-
-    {#<!--    <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap.4.6.min.css') }}">-->#}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/init.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     <title>{% block title %}{% endblock %}</title>
@@ -19,10 +17,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="/">首页</a>
-        {#        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"#}
-        {#                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">#}
-        {#            <span class="navbar-toggler-icon"></span>#}
-        {#        </button>#}
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 {% if user.admin in [2,3] and user %}
@@ -74,28 +68,26 @@
         <div class="nav" style="width: 200px;">
             <ul class="left-nav">
                 <a href="{{ url_for('admin.lend_book') }}">
-                    <div>出借图书</div>
+                    <div>图书借阅</div>
                 </a>
                 <a href="{{ url_for('admin.return_book') }}">
-                    <div>返还图书</div>
+                    <div>图书归还</div>
                 </a>
                 <a href="{{ url_for('admin.add_book') }}">
-                    <div>添加图书</div>
+                    <div>图书入库</div>
                 </a>
                 <a href="{{ url_for('admin.add_tags') }}">
-                    <div>添加或者删除标签</div>
+                    <div>标签管理</div>
                 </a>
                 <a href="{{ url_for('admin.list_book') }}">
-                    <div>图书列表和修改</div>
+                    <div>图书管理</div>
                 </a>
-
                 {% if user.admin == 3 and user %}
                     <a href="{{ url_for('admin.admin_user_purview') }}">
-                        <div>用户信息以权限修改</div>
+                        <div>用户管理</div>
                     </a>
-{#                    用户借阅列表后台修改#}
                     <a href="{{ url_for('admin.admin_user_borrow') }}">
-                        <div>用户借阅列表后台修改</div>
+                        <div>借阅管理</div>
                     </a>
                 {% endif %}
                 <!-- 更多链接... -->
@@ -109,9 +101,7 @@
         <div class="content">
             {% block body %}{% endblock %}
         </div>
-
     </div>
 </div>
 </body>
-
 </html>
